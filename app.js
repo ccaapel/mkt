@@ -35,23 +35,7 @@ function seed() {
     return x.toISOString().slice(0, 10);
   };
   return {
-    tasks: [
-      // ===== Concluído (última semana → agora) =====
-      { id: uid(), title: 'Planejamento editorial de junho', desc: 'Definição de pilares, temas e cadência de publicação do mês.', cat: 'Conteúdo', resp: 'Pedro', date: d(-6), status: 'done' },
-      { id: uid(), title: 'Atualização do Google Meu Negócio', desc: 'Fotos novas da unidade, horário de funcionamento e descrição.', cat: 'Operacional', resp: 'Coord.', date: d(-5), status: 'done' },
-      { id: uid(), title: 'Campanha de inverno — 3 Reels publicados', desc: 'Série de Reels com áudio em alta e foco em alcance.', cat: 'Social Media', resp: 'Pedro', date: d(-4), status: 'done' },
-      { id: uid(), title: 'Stories interativos diários (enquete e quiz)', desc: 'Caixinha de dúvidas de inglês para gerar engajamento.', cat: 'Social Media', resp: 'Pedro', date: d(-3), status: 'done' },
-      { id: uid(), title: 'Post colaborativo com a Sunset Run', desc: 'Collab publicada com troca de audiências.', cat: 'Parcerias', resp: 'Equipe', date: d(-2), status: 'done' },
-      { id: uid(), title: 'Carrossel "Erros de inglês do pelotense"', desc: 'Conteúdo salvável com humor local.', cat: 'Conteúdo', resp: 'Pedro', date: d(-1), status: 'done' },
-      // ===== Em Produção (agora) =====
-      { id: uid(), title: 'Campanha de matrículas 2º semestre — criativos', desc: 'Definição de oferta, peças e mídia paga.', cat: 'Captação', resp: 'Equipe', date: d(2), status: 'doing' },
-      { id: uid(), title: 'Minidoc "30 Dias Destravando" — episódio 1', desc: 'Seleção do aluno e gravação do marco inicial.', cat: 'Conteúdo', resp: 'Pedro', date: d(1), status: 'doing' },
-      // ===== Planejado (próximas entregas) =====
-      { id: uid(), title: 'Quadro "Tradutor de Pelotês → English" (piloto)', desc: '3 episódios-teste com teacher carismática.', cat: 'Social Media', resp: 'Pedro', date: d(4), status: 'todo' },
-      { id: uid(), title: 'Ação na FENADOCE — roteiro e autorizações', desc: 'Planejar abordagem de rua e termos de uso de imagem.', cat: 'Eventos', resp: 'Equipe', date: d(6), status: 'todo' },
-      { id: uid(), title: 'Collab "Cardápio em Inglês" com café local', desc: 'Selecionar parceiro e alinhar post colaborativo.', cat: 'Parcerias', resp: 'Coord.', date: d(9), status: 'todo' },
-      { id: uid(), title: 'Reativação de ex-alunos via CRM', desc: 'Disparo segmentado de e-mail e WhatsApp.', cat: 'Captação', resp: 'Financeiro', date: d(11), status: 'todo' },
-    ],
+    tasks: [],
     ideas: [
       { id: uid(), title: 'Quadro fixo: Tradutor de Pelotês → English', desc: 'Série recorrente traduzindo gírias gaúchas. Hiperlocal e difícil de copiar. Risco baixo, alcance alto.', cat: 'Social Media', votes: 5 },
       { id: uid(), title: 'Minidocumentário "30 Dias Destravando"', desc: 'Acompanhar um aluno real do zero à primeira conversa. Prova social máxima. Risco alto, retorno alto.', cat: 'Conteúdo', votes: 4 },
