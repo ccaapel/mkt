@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Marketing · CCAA Pelotas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=7" />
+</head>
+<body>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img class="brand-logo" src="assets/ccaa-logo.png?v=5" alt="CCAA" />
+      <div class="brand-text">
+        <strong>Marketing</strong>
+        <span>Pelotas</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="painel">Dashboard</button>
+      <button class="nav-item" data-view="calendario">Planejamento</button>
+      <button class="nav-item" data-view="tarefas">Plano de Ação</button>
+      <button class="nav-item" data-view="ideias">Pipeline</button>
+      <button class="nav-item" data-view="resultados">Analytics</button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <button class="btn-ghost" id="themeToggle">Modo escuro</button>
+      <button class="btn-ghost" id="exportBtn">⬇ Exportar dados</button>
+      <button class="btn-ghost" id="importBtn">⬆ Importar dados</button>
+      <input type="file" id="importFile" accept="application/json" hidden />
+      <p class="hint">Dados salvos neste navegador.</p>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="viewTitle">Dashboard</h1>
+        <p class="subtitle" id="viewSub">Visão geral do mês para o alinhamento da equipe</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="today-chip" id="todayChip"></span>
+        <button class="btn-soft" id="cmdkBtn">Buscar <kbd>Ctrl K</kbd></button>
+        <button class="btn-soft" id="summaryBtn">Resumo</button>
+        <button class="btn-dark" id="presentBtn">▶ Apresentar</button>
+        <button class="btn-primary" id="quickAddBtn">+ Nova entrega</button>
+      </div>
+    </header>
+
+    <!-- VIEW: PAINEL -->
+    <section class="view active" id="view-painel">
+      <div class="kpis" id="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h2>Foco estratégico do mês</h2>
+            <span class="muted" id="focoMes"></span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span id="progressLabel" class="muted"></span>
+          </div>
+          <div id="statusBreak" class="status-break"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Próximas entregas</h2></div>
+          <ul class="upcoming" id="upcoming"></ul>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Destaques de performance</h2><span class="muted">prova de valor para a reunião</span></div>
+          <ul class="mini-list" id="painelResultados"></ul>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Ideias prioritárias</h2></div>
+          <ul class="mini-list" id="painelIdeias"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: CALENDÁRIO -->
+    <section class="view" id="view-calendario">
+      <div class="cal-toolbar">
+        <button class="btn-icon" id="prevMonth">‹</button>
+        <h2 id="calMonthLabel"></h2>
+        <button class="btn-icon" id="nextMonth">›</button>
+        <button class="btn-ghost" id="todayBtn">Hoje</button>
+        <button class="btn-primary" id="printBtn" style="margin-left:auto">🖨️ Imprimir agenda</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </section>
+
+    <!-- VIEW: TAREFAS -->
+    <section class="view" id="view-tarefas">
+      <div class="board-filters">
+        <input type="search" id="taskSearch" placeholder="Buscar entrega ou tarefa..." />
+        <select id="catFilter"><option value="">Todas as categorias</option></select>
+      </div>
+      <div class="board" id="board"></div>
+    </section>
+
+    <!-- VIEW: IDEIAS -->
+    <section class="view" id="view-ideias">
+      <div class="view-head">
+        <p class="muted">Backlog criativo — priorize com votos o que vale validar.</p>
+        <button class="btn-primary" id="addIdeaBtn">+ Nova ideia</button>
+      </div>
+      <div class="cards-grid" id="ideasGrid"></div>
+    </section>
+
+    <!-- VIEW: RESULTADOS -->
+    <section class="view" id="view-resultados">
+      <div class="view-head">
+        <p class="muted">Indicadores e resultados que comprovam o valor do marketing.</p>
+        <button class="btn-primary" id="addResultBtn">+ Novo resultado</button>
+      </div>
+      <div class="cards-grid" id="resultsGrid"></div>
+    </section>
+  </main>
+
+  <!-- ===== FOLHA DE IMPRESSÃO (só aparece ao imprimir) ===== -->
+  <div id="printSheet" class="print-sheet" aria-hidden="true"></div>
+
+  <!-- ===== MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" id="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Nova tarefa</h3>
+        <button class="btn-icon" id="modalClose">✕</button>
+      </div>
+      <form id="modalForm" class="modal-body"></form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- ===== MODO APRESENTAÇÃO ===== -->
+  <div class="present" id="presentMode" hidden>
+    <button class="present-close" id="presentClose">✕ Sair</button>
+    <div class="present-stage" id="presentStage"></div>
+    <div class="present-bar">
+      <button class="present-nav" id="presentPrev">‹</button>
+      <div class="present-dots" id="presentDots"></div>
+      <button class="present-nav" id="presentNext">›</button>
+    </div>
+  </div>
+
+  <!-- ===== COMMAND PALETTE ===== -->
+  <div class="cmdk" id="cmdk" hidden>
+    <div class="cmdk-box">
+      <input id="cmdkInput" placeholder="Buscar ou executar… (navegar, criar, abrir entrega)" autocomplete="off" />
+      <ul class="cmdk-list" id="cmdkList"></ul>
+    </div>
+  </div>
+
+  <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
+
+  <script src="app.js?v=7"></script>
+</body>
+</html>

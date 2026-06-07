@@ -1,0 +1,7 @@
+# Configuração local de preview (não precisa no GitHub)
+.claude/
+
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini
