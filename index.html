@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
   <!-- ===== SIDEBAR ===== -->
@@ -108,6 +108,7 @@
       <div class="board-filters">
         <input type="search" id="taskSearch" placeholder="Buscar entrega ou tarefa..." />
         <select id="catFilter"><option value="">Todas as categorias</option></select>
+        <button class="btn-soft" id="manageBtn">⚙ Gerenciar</button>
       </div>
       <div class="board" id="board"></div>
     </section>
@@ -147,6 +148,53 @@
 
   <div class="toast" id="toast" hidden></div>
 
+  <!-- ===== GERENCIAR ENTREGAS ===== -->
+  <div class="manage" id="manageOverlay" hidden>
+    <div class="manage-panel">
+      <div class="manage-head">
+        <h3>Gerenciar entregas</h3>
+        <button class="btn-icon" id="manageClose">✕</button>
+      </div>
+      <div class="manage-toolbar">
+        <input type="search" id="manageSearch" placeholder="Buscar por título, responsável…" />
+        <select id="manageStatusF">
+          <option value="">Todos os status</option>
+          <option value="todo">Planejado</option>
+          <option value="doing">Em Produção</option>
+          <option value="done">Concluído</option>
+        </select>
+        <select id="manageCatF"><option value="">Todas as categorias</option></select>
+        <button class="btn-primary" id="manageAdd">+ Nova entrega</button>
+      </div>
+      <div class="manage-bulk" id="manageBulk" hidden>
+        <span id="manageBulkCount"></span>
+        <select id="manageBulkStatus">
+          <option value="">Mover para…</option>
+          <option>Planejado</option>
+          <option>Em Produção</option>
+          <option>Concluído</option>
+        </select>
+        <button class="btn-ghost" id="manageBulkClear">Limpar seleção</button>
+        <button class="btn-del" id="manageBulkDel">Excluir selecionadas</button>
+      </div>
+      <div class="manage-table-wrap">
+        <table class="manage-table">
+          <thead><tr>
+            <th class="col-check"><input type="checkbox" id="manageAll" /></th>
+            <th data-sort="title">Título <span class="arr"></span></th>
+            <th data-sort="cat">Categoria <span class="arr"></span></th>
+            <th data-sort="resp">Responsável <span class="arr"></span></th>
+            <th data-sort="date">Data <span class="arr"></span></th>
+            <th data-sort="status">Status <span class="arr"></span></th>
+            <th class="nosort">Ações</th>
+          </tr></thead>
+          <tbody id="manageBody"></tbody>
+        </table>
+      </div>
+      <div class="manage-foot" id="manageFoot"></div>
+    </div>
+  </div>
+
   <!-- ===== MODO APRESENTAÇÃO ===== -->
   <div class="present" id="presentMode" hidden>
     <button class="present-close" id="presentClose">✕ Sair</button>
@@ -168,6 +216,6 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

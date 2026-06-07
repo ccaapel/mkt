@@ -527,6 +527,7 @@ document.getElementById('addResultBtn').onclick = () => openResultModal();
 function refreshAll() {
   const active = document.querySelector('.view.active').id.replace('view-', '');
   switchView(active);
+  if (!document.getElementById('manageOverlay').hidden) renderManage();
 }
 
 /* ---- Exportar / Importar ---- */
@@ -644,6 +645,7 @@ function cmdkActions() {
     { g: 'Criar', ico: '+', label: 'Nova entrega', run: () => openTaskModal() },
     { g: 'Criar', ico: '+', label: 'Nova ideia', run: () => openIdeaModal() },
     { g: 'Criar', ico: '+', label: 'Novo resultado', run: () => openResultModal() },
+    { g: 'Ações', ico: '⚙', label: 'Gerenciar entregas', run: openManage },
     { g: 'Ações', ico: '▶', label: 'Iniciar apresentação', run: openPresent },
     { g: 'Ações', ico: '≣', label: 'Gerar resumo da reunião', run: openSummary },
   ];
@@ -781,6 +783,124 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     document.getElementById('cmdk').hidden ? openCmdk() : closeCmdk();
   } else if (e.key === 'Escape' && !document.getElementById('cmdk').hidden) closeCmdk();
+});
+
+/* ===========================================================
+   GERENCIAR ENTREGAS — central tipo planilha
+   =========================================================== */
+const manageState = { sort: 'date', dir: 1 };
+const manageSel = new Set();
+let manageWired = false;
+
+function openManage() {
+  document.getElementById('manageOverlay').hidden = false;
+  // popular filtro de categorias (uma vez)
+  const cf = document.getElementById('manageCatF');
+  if (!cf.dataset.filled) { CATEGORIES.forEach(c => cf.innerHTML += `<option value="${c}">${c}</option>`); cf.dataset.filled = '1'; }
+  if (!manageWired) wireManage();
+  renderManage();
+}
+function closeManage() { document.getElementById('manageOverlay').hidden = true; refreshAll(); }
+
+function getManageTasks() {
+  const q = (document.getElementById('manageSearch').value || '').toLowerCase();
+  const sf = document.getElementById('manageStatusF').value;
+  const cf = document.getElementById('manageCatF').value;
+  const r = db.tasks.filter(t =>
+    (!q || t.title.toLowerCase().includes(q) || (t.desc || '').toLowerCase().includes(q) || (t.resp || '').toLowerCase().includes(q)) &&
+    (!sf || t.status === sf) && (!cf || t.cat === cf));
+  const k = manageState.sort, d = manageState.dir, order = { todo: 0, doing: 1, done: 2 };
+  r.sort((a, b) => {
+    let va, vb;
+    if (k === 'status') { va = order[a.status]; vb = order[b.status]; }
+    else { va = (a[k] || '').toString().toLowerCase(); vb = (b[k] || '').toString().toLowerCase(); }
+    return va < vb ? -d : va > vb ? d : 0;
+  });
+  return r;
+}
+function manageCatOptions(sel) { return `<option value=""></option>` + CATEGORIES.map(c => `<option ${c === sel ? 'selected' : ''}>${c}</option>`).join(''); }
+function manageStatusOptions(key) { return STATUSES.map(s => `<option value="${s.label}" ${s.key === key ? 'selected' : ''}>${s.label}</option>`).join(''); }
+
+function renderManage() {
+  const rows = getManageTasks();
+  document.getElementById('manageBody').innerHTML = rows.length ? rows.map(t => `
+    <tr data-id="${t.id}">
+      <td class="col-check"><input type="checkbox" class="row-check" ${manageSel.has(t.id) ? 'checked' : ''} /></td>
+      <td class="col-title"><input data-field="title" value="${esc(t.title)}" /></td>
+      <td><select data-field="cat">${manageCatOptions(t.cat)}</select></td>
+      <td><input data-field="resp" value="${esc(t.resp || '')}" placeholder="—" /></td>
+      <td><input type="date" data-field="date" value="${t.date || ''}" /></td>
+      <td><select data-field="status">${manageStatusOptions(t.status)}</select></td>
+      <td><button class="row-del">Excluir</button></td>
+    </tr>`).join('') : `<tr><td colspan="7" class="manage-empty">Nenhuma entrega encontrada.</td></tr>`;
+  document.querySelectorAll('.manage-table th[data-sort]').forEach(th => {
+    th.querySelector('.arr').textContent = th.dataset.sort === manageState.sort ? (manageState.dir > 0 ? '▲' : '▼') : '';
+  });
+  document.getElementById('manageAll').checked = rows.length > 0 && rows.every(t => manageSel.has(t.id));
+  document.getElementById('manageFoot').innerHTML =
+    `<span>Mostrando ${rows.length} de ${db.tasks.length} entregas</span><span>Edite direto na tabela · clique no cabeçalho para ordenar</span>`;
+  updateManageBulk();
+}
+function updateManageBulk() {
+  const bar = document.getElementById('manageBulk'), n = manageSel.size;
+  bar.hidden = n === 0;
+  if (n) document.getElementById('manageBulkCount').textContent = `${n} selecionada(s)`;
+}
+function wireManage() {
+  manageWired = true;
+  document.getElementById('manageClose').onclick = closeManage;
+  document.getElementById('manageOverlay').addEventListener('click', e => { if (e.target.id === 'manageOverlay') closeManage(); });
+  document.getElementById('manageAdd').onclick = () => openTaskModal();
+  document.getElementById('manageSearch').oninput = renderManage;
+  document.getElementById('manageStatusF').onchange = renderManage;
+  document.getElementById('manageCatF').onchange = renderManage;
+  document.getElementById('manageAll').onchange = e => {
+    const rows = getManageTasks();
+    rows.forEach(t => e.target.checked ? manageSel.add(t.id) : manageSel.delete(t.id));
+    renderManage();
+  };
+  document.querySelectorAll('.manage-table th[data-sort]').forEach(th => th.onclick = () => {
+    if (manageState.sort === th.dataset.sort) manageState.dir *= -1;
+    else { manageState.sort = th.dataset.sort; manageState.dir = 1; }
+    renderManage();
+  });
+  document.getElementById('manageBulkDel').onclick = () => {
+    if (manageSel.size && confirm(`Excluir ${manageSel.size} entrega(s) definitivamente?`)) {
+      db.tasks = db.tasks.filter(t => !manageSel.has(t.id)); manageSel.clear(); save(); renderManage(); toast('Entregas excluídas');
+    }
+  };
+  document.getElementById('manageBulkStatus').onchange = e => {
+    const key = STATUSES.find(s => s.label === e.target.value)?.key;
+    if (key && manageSel.size) {
+      db.tasks.forEach(t => { if (manageSel.has(t.id)) t.status = key; });
+      save(); manageSel.clear(); renderManage(); toast('Status atualizado em massa');
+    }
+    e.target.selectedIndex = 0;
+  };
+  document.getElementById('manageBulkClear').onclick = () => { manageSel.clear(); renderManage(); };
+  const body = document.getElementById('manageBody');
+  body.addEventListener('change', e => {
+    const tr = e.target.closest('tr'); if (!tr) return; const id = tr.dataset.id;
+    if (e.target.classList.contains('row-check')) {
+      e.target.checked ? manageSel.add(id) : manageSel.delete(id);
+      document.getElementById('manageAll').checked = getManageTasks().every(t => manageSel.has(t.id));
+      updateManageBulk(); return;
+    }
+    const t = db.tasks.find(x => x.id === id); if (!t) return;
+    const f = e.target.dataset.field;
+    if (f === 'status') t.status = STATUSES.find(s => s.label === e.target.value)?.key || t.status;
+    else if (f) t[f] = e.target.value;
+    save();
+  });
+  body.addEventListener('click', e => {
+    if (!e.target.classList.contains('row-del')) return;
+    const id = e.target.closest('tr').dataset.id;
+    if (confirm('Excluir esta entrega?')) { db.tasks = db.tasks.filter(x => x.id !== id); manageSel.delete(id); save(); renderManage(); toast('Entrega excluída'); }
+  });
+}
+document.getElementById('manageBtn').onclick = openManage;
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('manageOverlay').hidden && document.getElementById('modalOverlay').hidden) closeManage();
 });
 
 /* ===========================================================

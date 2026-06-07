@@ -199,7 +199,7 @@ body {
 .result-card .rc-result { background: #eafaf0; border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--green); font-weight: 600; }
 
 /* ===== MODAL ===== */
-.modal-overlay { position: fixed; inset: 0; background: rgba(20,22,40,.45); backdrop-filter: blur(3px); display: grid; place-items: center; z-index: 50; animation: fade .2s; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(20,22,40,.45); backdrop-filter: blur(3px); display: grid; place-items: center; z-index: 95; animation: fade .2s; }
 .modal-overlay[hidden], .toast[hidden] { display: none; }
 .modal { background: var(--card); border-radius: 18px; width: min(520px, 92vw); max-height: 90vh; overflow: auto; box-shadow: 0 24px 64px rgba(0,0,0,.3); }
 .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 16px; border-bottom: 1px solid var(--line); }
@@ -329,6 +329,37 @@ kbd { font: inherit; font-size: 10.5px; font-weight: 600; background: var(--bg);
 
 /* ===== CONFETTI ===== */
 .confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+
+/* ===== GERENCIAR ENTREGAS (central tipo planilha) ===== */
+.manage { position: fixed; inset: 0; z-index: 85; background: rgba(16,18,28,.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 4vh 3vw; animation: fade .15s; }
+.manage-panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; width: min(1060px, 97vw); max-height: 92vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); overflow: hidden; }
+.manage-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.manage-head h3 { font-size: 18px; font-weight: 700; }
+.manage-toolbar { display: flex; gap: 10px; padding: 14px 22px; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: center; }
+.manage-toolbar input, .manage-toolbar select { padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; font: inherit; font-size: 13.5px; background: var(--card); color: var(--ink); }
+.manage-toolbar #manageSearch { flex: 1; min-width: 180px; }
+.manage-toolbar .btn-primary { margin-left: auto; }
+.manage-bulk { display: flex; align-items: center; gap: 12px; padding: 11px 22px; background: var(--tint); border-bottom: 1px solid var(--line); font-size: 13.5px; font-weight: 700; color: var(--red); }
+.manage-bulk select { margin-left: auto; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: 13px; background: var(--card); color: var(--ink); }
+.manage-bulk .btn-ghost, .manage-bulk .btn-del { padding: 7px 12px; font-size: 13px; }
+.manage-table-wrap { overflow: auto; flex: 1; }
+.manage-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.manage-table th { position: sticky; top: 0; z-index: 1; background: var(--col-bg); text-align: left; padding: 11px 12px; font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; color: var(--ink-soft); border-bottom: 1px solid var(--line); white-space: nowrap; cursor: pointer; user-select: none; }
+.manage-table th.nosort, .manage-table th.col-check { cursor: default; }
+.manage-table th:hover:not(.nosort):not(.col-check) { color: var(--ink); }
+.manage-table th .arr { font-size: 10px; color: var(--red); }
+.manage-table td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.manage-table tbody tr:hover td { background: var(--col-bg); }
+.manage-table .col-check { width: 40px; text-align: center; padding-left: 14px; }
+.manage-table input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--red); }
+.manage-table td input:not([type="checkbox"]), .manage-table td select { width: 100%; border: 1px solid transparent; background: transparent; font: inherit; font-size: 13px; color: var(--ink); padding: 6px 8px; border-radius: 7px; transition: all .12s; }
+.manage-table td.col-title input { font-weight: 600; min-width: 200px; }
+.manage-table td input:hover, .manage-table td select:hover { border-color: var(--line); }
+.manage-table td input:focus, .manage-table td select:focus { outline: none; border-color: var(--red); background: var(--card); }
+.manage-table .row-del { background: none; border: none; color: var(--ink-soft); cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border-radius: 7px; white-space: nowrap; }
+.manage-table .row-del:hover { color: var(--red); background: var(--tint); }
+.manage-empty { padding: 44px; text-align: center; color: var(--ink-soft); font-style: italic; }
+.manage-foot { padding: 12px 22px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 /* ===== LOGO NA FOLHA DE IMPRESSÃO ===== */
 .print-sheet .ps-mark-img { width: 46px; height: 46px; object-fit: contain; }
