@@ -74,7 +74,64 @@ function switchView(v) {
   if (v === 'calendario') renderCalendar();
   if (v === 'tarefas') renderBoard();
   if (v === 'ideias') renderIdeas();
-  if (v === 'resultados') renderResults();
+  if (v === 'resultados') { renderResults(); renderInstagram(); }
+}
+
+/* ===========================================================
+   PAINEL INSTAGRAM — dados reais do @ccaa.pelotas (Analytics)
+   =========================================================== */
+async function renderInstagram() {
+  const el = document.getElementById('igPanel');
+  if (!el) return;
+  el.innerHTML = '<div class="ig-loading">Carregando dados do Instagram…</div>';
+  let data;
+  try {
+    const r = await fetch('data/instagram.json?cb=' + Date.now());
+    if (!r.ok) throw new Error('http');
+    data = await r.json();
+  } catch (e) {
+    el.innerHTML = '<div class="ig-empty">Dados do Instagram indisponíveis aqui (abra pelo site publicado). Para atualizar os números, peça uma nova coleta.</div>';
+    return;
+  }
+  const p = data.profile || {}, posts = data.posts || [];
+  const inter = x => (x.likes || 0) + (x.comments || 0);
+  const reels = posts.filter(x => x.kind === 'Reel'), est = posts.filter(x => x.kind !== 'Reel');
+  const avg = a => a.length ? Math.round(a.reduce((s, x) => s + inter(x), 0) / a.length) : 0;
+  const avgReel = avg(reels), avgEst = avg(est);
+  const mult = avgEst ? (avgReel / avgEst).toFixed(1) : '—';
+  const totalInter = posts.reduce((s, x) => s + inter(x), 0);
+  const engRate = (p.followers && posts.length) ? ((totalInter / posts.length / p.followers) * 100).toFixed(2) : '—';
+  const fmt = d => { if (!d) return '—'; const [y, m, dd] = d.split('-'); return `${dd}/${m}`; };
+  const upd = data.updatedAt ? fmt(data.updatedAt) + '/' + data.updatedAt.slice(0, 4) : '';
+
+  const rows = posts.map(x => `
+    <tr class="${x.kind === 'Reel' ? 'reel' : ''}">
+      <td><span class="ig-badge ${x.kind === 'Reel' ? 'reel' : 'est'}">${x.kind}</span></td>
+      <td>${fmt(x.date)}</td>
+      <td class="num">${(x.likes || 0).toLocaleString('pt-BR')}</td>
+      <td class="num">${(x.comments || 0).toLocaleString('pt-BR')}</td>
+      <td class="num">${x.views != null ? x.views.toLocaleString('pt-BR') : '—'}</td>
+      <td class="ig-cap"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.caption || '(sem legenda)')}</a></td>
+    </tr>`).join('');
+
+  el.innerHTML = `
+    <div class="ig-head">
+      <h2><span class="ig-dot"></span> Instagram · @${esc(p.username || 'ccaa.pelotas')}</h2>
+      <span class="ig-meta">Atualizado em ${upd} · <a href="https://www.instagram.com/${esc(p.username || 'ccaa.pelotas')}/" target="_blank" rel="noopener">ver perfil</a></span>
+    </div>
+    <div class="ig-kpis">
+      <div class="ig-kpi"><div class="v">${(p.followers || 0).toLocaleString('pt-BR')}</div><div class="l">Seguidores</div></div>
+      <div class="ig-kpi"><div class="v">${(p.posts || 0).toLocaleString('pt-BR')}</div><div class="l">Publicações</div></div>
+      <div class="ig-kpi"><div class="v">${Math.round(totalInter / (posts.length || 1))}</div><div class="l">Interações/post (média)</div></div>
+      <div class="ig-kpi"><div class="v">${engRate}%</div><div class="l">Taxa de engajamento</div></div>
+    </div>
+    ${avgEst ? `<div class="ig-insight">⚡ <span>Seus <strong>Reels</strong> engajam <strong>${mult}x mais</strong> que posts estáticos (média de <strong>${avgReel}</strong> vs <strong>${avgEst}</strong> interações). Nos últimos ${posts.length} posts, só ${reels.length} foram Reels — <strong>priorizar Reels</strong> é a alavanca mais rápida de alcance.</span></div>` : ''}
+    <div class="ig-table-wrap">
+      <table class="ig-table">
+        <thead><tr><th>Tipo</th><th>Data</th><th class="num">Curtidas</th><th class="num">Coment.</th><th class="num">Views</th><th>Publicação</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 }
 
 /* ===========================================================

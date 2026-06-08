@@ -330,6 +330,32 @@ kbd { font: inherit; font-size: 10.5px; font-weight: 600; background: var(--bg);
 /* ===== CONFETTI ===== */
 .confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
 
+/* ===== PAINEL INSTAGRAM (Analytics) ===== */
+.ig-panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 18px; }
+.ig-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.ig-head h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+.ig-head h2 .ig-dot { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(45deg,#f09433,#dc2743,#bc1888); }
+.ig-head .ig-meta { font-size: 12px; color: var(--ink-soft); }
+.ig-head .ig-meta a { color: var(--blue); text-decoration: none; font-weight: 600; }
+.ig-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.ig-kpi { background: var(--col-bg); border-radius: 12px; padding: 14px 16px; }
+.ig-kpi .v { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.ig-kpi .l { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.ig-insight { background: var(--tint); color: var(--red); border-radius: 12px; padding: 13px 16px; font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; line-height: 1.45; }
+.ig-table-wrap { overflow-x: auto; }
+.ig-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ig-table th { text-align: left; padding: 9px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--ink-soft); border-bottom: 1px solid var(--line); white-space: nowrap; }
+.ig-table th.num, .ig-table td.num { text-align: right; }
+.ig-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.ig-table tr.reel td { background: var(--tint); }
+.ig-badge { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.ig-badge.reel { background: var(--red); color: #fff; }
+.ig-badge.est { background: var(--col-bg); color: var(--ink-soft); border: 1px solid var(--line); }
+.ig-cap { max-width: 320px; }
+.ig-cap a { color: var(--ink); text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ig-cap a:hover { color: var(--red); }
+.ig-loading, .ig-empty { color: var(--ink-soft); font-size: 13.5px; padding: 10px 2px; font-style: italic; }
+
 /* ===== GERENCIAR ENTREGAS (central tipo planilha) ===== */
 .manage { position: fixed; inset: 0; z-index: 85; background: rgba(16,18,28,.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 4vh 3vw; animation: fade .15s; }
 .manage-panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; width: min(1060px, 97vw); max-height: 92vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); overflow: hidden; }
