@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=13" />
 </head>
 <body>
   <!-- ===== SIDEBAR ===== -->
@@ -27,6 +27,7 @@
       <button class="nav-item" data-view="tarefas">Plano de Ação</button>
       <button class="nav-item" data-view="ideias">Pipeline</button>
       <button class="nav-item" data-view="resultados">Analytics</button>
+      <button class="nav-item" data-view="motor">Motor Semanal</button>
     </nav>
 
     <div class="sidebar-foot">
@@ -49,7 +50,6 @@
         <span class="today-chip" id="todayChip"></span>
         <button class="btn-soft" id="cmdkBtn">Buscar <kbd>Ctrl K</kbd></button>
         <button class="btn-soft" id="summaryBtn">Resumo</button>
-        <button class="btn-dark" id="presentBtn">▶ Apresentar</button>
         <button class="btn-primary" id="quickAddBtn">+ Nova entrega</button>
       </div>
     </header>
@@ -131,6 +131,12 @@
         <button class="btn-primary" id="addResultBtn">+ Novo resultado</button>
       </div>
       <div class="cards-grid" id="resultsGrid"></div>
+    </section>
+
+    <!-- VIEW: MOTOR SEMANAL -->
+    <section class="view" id="view-motor">
+      <p class="mo-intro">De visibilidade para matrícula em 7 dias. O que você decide executar esta semana define o Growth Score da próxima.</p>
+      <div id="motorRoot"></div>
     </section>
   </main>
 
@@ -218,6 +224,6 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>

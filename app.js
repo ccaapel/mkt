@@ -61,6 +61,7 @@ const TITLES = {
   tarefas:    ['Plano de Ação', 'Acompanhamento das entregas do mês'],
   ideias:     ['Pipeline de Ideias', 'Backlog criativo para validação e priorização'],
   resultados: ['Analytics', 'Indicadores e resultados que comprovam valor'],
+  motor:      ['Motor Semanal de Crescimento', 'Sistema semanal para transformar buscas locais em matrículas'],
 };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -76,6 +77,7 @@ function switchView(v) {
   if (v === 'tarefas') renderBoard();
   if (v === 'ideias') renderIdeas();
   if (v === 'resultados') { renderResults(); renderInstagram(); }
+  if (v === 'motor') renderMotor();
 }
 
 /* ===========================================================
@@ -808,7 +810,6 @@ function cmdkActions() {
     { g: 'Criar', ico: '+', label: 'Nova ideia', run: () => openIdeaModal() },
     { g: 'Criar', ico: '+', label: 'Novo resultado', run: () => openResultModal() },
     { g: 'Ações', ico: '⚙', label: 'Gerenciar entregas', run: openManage },
-    { g: 'Ações', ico: '▶', label: 'Iniciar apresentação', run: openPresent },
     { g: 'Ações', ico: '≣', label: 'Gerar resumo da reunião', run: openSummary },
   ];
   db.tasks.forEach(t => a.push({ g: 'Entregas', ico: '•', label: t.title, sub: 'abrir', run: () => openTaskModal(t.id) }));
@@ -926,7 +927,6 @@ function confetti() {
 /* ===========================================================
    WIRING das funções novas
    =========================================================== */
-document.getElementById('presentBtn').onclick = openPresent;
 document.getElementById('presentClose').onclick = closePresent;
 document.getElementById('presentPrev').onclick = () => presentGo(-1);
 document.getElementById('presentNext').onclick = () => presentGo(1);
@@ -1064,6 +1064,214 @@ document.getElementById('manageBtn').onclick = openManage;
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !document.getElementById('manageOverlay').hidden && document.getElementById('modalOverlay').hidden) closeManage();
 });
+
+/* ===========================================================
+   MOTOR SEMANAL DE CRESCIMENTO
+   =========================================================== */
+const MOTOR_KEY = 'ccaa_motor_v1';
+let MOTOR = null;
+function motorLoad() { try { const r = localStorage.getItem(MOTOR_KEY); if (r) return JSON.parse(r); } catch (e) {} return motorSeed(); }
+function motorSave() { try { localStorage.setItem(MOTOR_KEY, JSON.stringify(MOTOR)); } catch (e) {} }
+function motorSeed() {
+  return {
+    week: '02/06 a 08/06', prevScore: 40, target: 12, realResults: 5, projectionCtr: 3.7, executed: [],
+    risk: 'Concorrente assumiu o topo de "melhor escola de inglês em Pelotas" com avaliações recentes. Reforce a prova social e peça avaliações dos alunos.',
+    quickWins: [
+      { id: 'qw1', query: 'curso de inglês em Pelotas', pos: 6, vol: 320, intent: 'matrícula', ease: 8, action: 'Criar/otimizar a landing "Curso de Inglês em Pelotas" com oferta de aula experimental grátis e botão de WhatsApp direto no topo.' },
+      { id: 'qw2', query: 'aula experimental de inglês Pelotas', pos: 9, vol: 90, intent: 'avaliação', ease: 9, action: 'Página de captura dedicada: formulário curto, WhatsApp direto e prova social (Experience Awards).' },
+      { id: 'qw3', query: 'escola de idiomas em Pelotas', pos: 5, vol: 210, intent: 'matrícula', ease: 7, action: 'Reforçar o Google Meu Negócio (fotos, avaliações) e a página institucional com diferenciais e provas.' },
+      { id: 'qw4', query: 'curso de espanhol em Pelotas', pos: 7, vol: 140, intent: 'matrícula', ease: 7, action: 'Landing de espanhol com os personagens (José Luis) e CTA de aula grátis.' },
+      { id: 'qw5', query: 'inglês para crianças Pelotas', pos: 8, vol: 110, intent: 'matrícula', ease: 7, action: 'Landing CCAA Kids com vídeo de aula real e depoimento de pais.' },
+      { id: 'qw6', query: 'inglês para viagem Pelotas', pos: 12, vol: 70, intent: 'avaliação', ease: 6, action: 'Lead magnet "Mini guia: inglês para viagem" capturando WhatsApp e e-mail.' },
+    ],
+    longTail: [
+      { id: 'lt1', query: 'quanto custa curso de inglês em Pelotas', vol: 50, ctrFrom: 3.1, ctrTo: 1.4, why: 'Resposta de IA e snippet de concorrente assumiram o topo.', fix: 'Tabela de planos + schema FAQ respondendo preço, duração e condições.' },
+      { id: 'lt2', query: 'melhor escola de inglês em Pelotas', vol: 80, ctrFrom: 4.2, ctrTo: 2.0, why: 'Título genérico, sem prova social no snippet.', fix: 'Reescrever title/meta com "bicampeão Experience Awards" e ativar review schema (estrelas).' },
+      { id: 'lt3', query: 'curso de inglês online ao vivo Pelotas', vol: 45, ctrFrom: 2.8, ctrTo: 1.1, why: 'A página não deixa claro que é "ao vivo com professor".', fix: 'Bloco "aulas ao vivo híbridas" + FAQ schema sobre o formato.' },
+    ],
+    bets: [
+      { id: 'bet1', query: 'intercâmbio de inglês para universitários Pelotas', evals: 6, season: 'Pré-temporada de intercâmbio', action: 'Landing de intercâmbio (CCLS Houston) + parceria com UFPel e UCPel.' },
+      { id: 'bet2', query: 'inglês para ENEM Pelotas', evals: 5, season: 'Sobe no 2º semestre', action: 'Post + página "inglês para ENEM: 5 palavras que mais caem".' },
+      { id: 'bet3', query: 'aula de inglês perto de mim', evals: 8, season: 'Busca mobile o ano todo', action: 'Otimizar Google Meu Negócio + página de localização + avaliações recentes.' },
+      { id: 'bet4', query: 'espanhol para viagem', evals: 4, season: 'Alta no inverno (férias)', action: 'Reel "espanhol pra viagem" + landing simples com CTA.' },
+    ],
+    trend: [
+      { wk: 'S1', ctr: 1.6, sov: 19, ai: 8 }, { wk: 'S2', ctr: 1.8, sov: 20, ai: 9 }, { wk: 'S3', ctr: 1.7, sov: 21, ai: 11 },
+      { wk: 'S4', ctr: 2.0, sov: 22, ai: 12 }, { wk: 'S5', ctr: 2.2, sov: 24, ai: 14 }, { wk: 'S6', ctr: 2.1, sov: 25, ai: 16 },
+      { wk: 'S7', ctr: 2.5, sov: 26, ai: 18 }, { wk: 'S8', ctr: 2.7, sov: 27, ai: 19 }, { wk: 'S9', ctr: 2.9, sov: 29, ai: 21 }, { wk: 'S10', ctr: 3.0, sov: 30, ai: 23 },
+    ],
+  };
+}
+function motorAllActions() { return [...MOTOR.quickWins, ...MOTOR.longTail, ...MOTOR.bets]; }
+function motorFind(id) { return motorAllActions().find(a => a.id === id); }
+function motorScore() {
+  const t = MOTOR.trend[MOTOR.trend.length - 1] || { ctr: 0, sov: 0 };
+  const visibility = Math.min(100, Math.round(t.sov * 2 + t.ctr * 3));
+  const total = motorAllActions().length;
+  const velocity = total ? Math.round(MOTOR.executed.length / total * 100) : 0;
+  const projection = Math.min(100, Math.round(MOTOR.realResults / (MOTOR.target || 12) * 100));
+  const score = Math.round(visibility * 0.45 + velocity * 0.30 + projection * 0.25);
+  const capture = Math.min(100, Math.round(t.sov + t.ctr * 1.4));
+  return { score, delta: score - (MOTOR.prevScore || 0), visibility, velocity, projection, capture };
+}
+const moPct = v => Number(v).toFixed(1).replace('.', ',') + '%';
+
+function renderMotor() {
+  if (!MOTOR) MOTOR = motorLoad();
+  const root = document.getElementById('motorRoot'); if (!root) return;
+  const s = motorScore();
+  const ins = [];
+  const lt = [...MOTOR.longTail].sort((a, b) => (b.ctrFrom - b.ctrTo) - (a.ctrFrom - a.ctrTo))[0];
+  if (lt) ins.push(`🤖 Perdendo cliques para IA e snippets em <b>"${esc(lt.query)}"</b>: CTR caiu de ${moPct(lt.ctrFrom)} para ${moPct(lt.ctrTo)}. ${esc(lt.fix)}`);
+  const qws = [...MOTOR.quickWins].sort((a, b) => (b.vol * b.ease) - (a.vol * a.ease));
+  if (qws[0]) ins.push(`⚡ Quick win de maior ROI: <b>"${esc(qws[0].query)}"</b> (posição ${qws[0].pos}, ${qws[0].vol}/mês). ${esc(qws[0].action)}`);
+  if (qws[1]) ins.push(`⚡ Segundo quick win: <b>"${esc(qws[1].query)}"</b> (posição ${qws[1].pos}, ${qws[1].vol}/mês).`);
+  if (MOTOR.risk) ins.push(`🛡️ Risco de defesa: ${esc(MOTOR.risk)}`);
+  const insights = ins.slice(0, 4);
+
+  const btns = id => { const ex = MOTOR.executed.includes(id); return `<div class="mo-btns"><button data-mo="idea" data-id="${id}">+ Ideia</button><button data-mo="task" data-id="${id}">+ Entrega</button><button class="exec ${ex ? 'on' : ''}" data-mo="exec" data-id="${id}">${ex ? '✓ Executado' : 'Executar'}</button></div>`; };
+  const qwCard = a => { const ex = MOTOR.executed.includes(a.id); const ic = a.intent === 'matrícula' ? 'matricula' : 'avaliacao'; return `<div class="mo-card ${ex ? 'done' : ''}"><div class="mo-card-top"><span class="mo-q">${esc(a.query)}</span><span class="mo-ease">facilidade ${a.ease}/10</span></div><div class="mo-meta">posição ${a.pos} · ${a.vol}/mês · <span class="mo-intent ${ic}">${esc(a.intent)}</span></div><p class="mo-action">${esc(a.action)}</p>${btns(a.id)}</div>`; };
+  const ltCard = a => { const ex = MOTOR.executed.includes(a.id); return `<div class="mo-card ${ex ? 'done' : ''}"><div class="mo-card-top"><span class="mo-q">${esc(a.query)}</span><span class="mo-ease">${a.vol}/mês</span></div><p class="mo-why">CTR caiu de <b>${moPct(a.ctrFrom)}</b> para <b>${moPct(a.ctrTo)}</b>. ${esc(a.why)}</p><p class="mo-action"><b>Correção:</b> ${esc(a.fix)}</p>${btns(a.id)}</div>`; };
+  const betCard = a => { const ex = MOTOR.executed.includes(a.id); return `<div class="mo-card ${ex ? 'done' : ''}"><div class="mo-card-top"><span class="mo-q">${esc(a.query)}</span><span class="mo-evals">+${a.evals} avaliações/mês</span></div><div class="mo-meta">${esc(a.season)}</div><p class="mo-action">${esc(a.action)}</p>${btns(a.id)}</div>`; };
+
+  root.innerHTML = `
+    <div class="mo-header">
+      <div class="mo-gauge" style="--p:${s.score}"><div class="g-in"><b>${s.score}</b><span>Growth Score</span></div></div>
+      <div>
+        <span class="mo-delta ${s.delta >= 0 ? 'up' : 'down'}">${s.delta >= 0 ? '▲' : '▼'} ${s.delta >= 0 ? '+' : ''}${s.delta} vs semana anterior</span>
+        <div class="mo-diag">Você está capturando <b>${s.capture}%</b> do potencial de buscas de alta intenção em Pelotas esta semana.</div>
+        <div class="mo-pillars">
+          <div class="mo-pillar"><div class="pl"><span>Visibilidade</span><span>${s.visibility}</span></div><div class="track"><div class="fill" style="width:${s.visibility}%"></div></div></div>
+          <div class="mo-pillar"><div class="pl"><span>Velocidade da equipe</span><span>${s.velocity}</span></div><div class="track"><div class="fill b" style="width:${s.velocity}%"></div></div></div>
+          <div class="mo-pillar"><div class="pl"><span>Projeção de avaliações</span><span>${s.projection}</span></div><div class="track"><div class="fill g" style="width:${s.projection}%"></div></div></div>
+        </div>
+      </div>
+      <div class="mo-toolbar">
+        <button class="btn-soft" id="moPresent">Apresentação Rápida</button>
+        <button class="btn-soft mo-hide-present" id="moPng">Exportar Resumo (PNG)</button>
+        <button class="btn-soft mo-hide-present" id="moCsv">Exportar Plano (CSV)</button>
+        <button class="btn-soft mo-hide-present" id="moGsc">Importar do Search Console</button>
+        <div class="mo-real mo-hide-present">Avaliações por busca: <input type="number" id="moReal" value="${MOTOR.realResults}" min="0" /> / ${MOTOR.target}</div>
+        <input type="file" id="moGscFile" accept=".csv" hidden />
+      </div>
+    </div>
+
+    <div class="mo-insights"><h3>Resumo de insights da semana</h3><ul>${insights.map(t => `<li><span class="ic">›</span><span>${t}</span></li>`).join('')}</ul></div>
+
+    <div class="mo-cols">
+      <div class="mo-col">
+        <div class="mo-col-head"><span class="pr hi">Prioridade alta</span> Quick Wins Imediatos</div>
+        <div class="mo-col-sub">Posições 4 a 20 em buscas de alta intenção</div>
+        ${MOTOR.quickWins.map(qwCard).join('')}
+      </div>
+      <div class="mo-col">
+        <div class="mo-col-head"><span class="pr md">Prioridade média</span> Long-tail com queda de CTR</div>
+        <div class="mo-col-sub">3+ palavras, volume alto, CTR caindo</div>
+        ${MOTOR.longTail.map(ltCard).join('')}
+      </div>
+      <div class="mo-col">
+        <div class="mo-col-head"><span class="pr bet">Aposta</span> Apostas da Semana</div>
+        <div class="mo-col-sub">Queries em alta que ainda não ranqueamos</div>
+        ${MOTOR.bets.map(betCard).join('')}
+      </div>
+    </div>
+
+    <div class="mo-trend"><h3>Tendência de visibilidade (últimas ${MOTOR.trend.length} semanas)</h3>
+      ${motorTrendSVG()}
+      <div class="mo-legend">
+        <span><i style="background:#DA251D"></i>CTR médio</span>
+        <span><i style="background:#1B3A8B"></i>Share of voice</span>
+        <span><i style="background:#D97706"></i>Tráfego perdido para IA</span>
+        <span><i style="background:#DA251D"></i>Projeção com as ações (tracejado)</span>
+      </div>
+    </div>
+
+    <div class="mo-gsc"><span>📋 <b>Toda segunda:</b> exporte as consultas do Google Search Console (Desempenho, Consultas, Exportar CSV) e clique em "Importar do Search Console" para atualizar os dados reais.</span><button class="btn-soft" id="moGsc2">Importar agora</button></div>`;
+
+  root.querySelector('#moPresent').onclick = () => {
+    const v = document.getElementById('view-motor'); const on = v.classList.toggle('mo-present');
+    root.querySelector('#moPresent').textContent = on ? 'Sair da apresentação' : 'Apresentação Rápida';
+  };
+  root.querySelector('#moPng').onclick = motorPNG;
+  root.querySelector('#moCsv').onclick = motorCSV;
+  const gscFile = root.querySelector('#moGscFile');
+  root.querySelector('#moGsc').onclick = () => gscFile.click();
+  root.querySelector('#moGsc2').onclick = () => gscFile.click();
+  gscFile.onchange = e => { const f = e.target.files[0]; if (f) { const rd = new FileReader(); rd.onload = () => motorImportGSC(rd.result); rd.readAsText(f); } };
+  root.querySelector('#moReal').onchange = e => { MOTOR.realResults = Math.max(0, +e.target.value || 0); motorSave(); renderMotor(); };
+  root.onclick = e => {
+    const b = e.target.closest('[data-mo]'); if (!b) return;
+    const a = motorFind(b.dataset.id); if (!a) return;
+    if (b.dataset.mo === 'idea') { db.ideas.unshift({ id: uid(), title: a.query, desc: a.action || a.fix || '', cat: 'Captação', votes: 0 }); save(); toast('Adicionado ao Pipeline de Ideias'); }
+    else if (b.dataset.mo === 'task') { const dt = new Date(); dt.setDate(dt.getDate() + 7); db.tasks.unshift({ id: uid(), title: (a.action || a.fix || a.query).slice(0, 90), desc: 'Motor Semanal · busca: ' + a.query, cat: 'Captação', resp: '', date: dt.toISOString().slice(0, 10), status: 'todo' }); save(); toast('Adicionado às entregas (sugerido em 7 dias)'); }
+    else if (b.dataset.mo === 'exec') { const i = MOTOR.executed.indexOf(b.dataset.id); if (i >= 0) MOTOR.executed.splice(i, 1); else MOTOR.executed.push(b.dataset.id); motorSave(); renderMotor(); }
+  };
+}
+function motorTrendSVG() {
+  const t = MOTOR.trend, n = t.length, W = 720, H = 240, pl = 34, pr = 16, pt = 14, pb = 30;
+  const projCtr = MOTOR.projectionCtr || t[n - 1].ctr * 1.2;
+  const maxV = Math.max(...t.map(p => Math.max(p.ctr, p.sov, p.ai)), projCtr);
+  const yMax = Math.max(10, Math.ceil(maxV / 10) * 10);
+  const slots = n + 1, xAt = i => pl + (W - pl - pr) * (i / (slots - 1)), yAt = v => (H - pb) - (H - pb - pt) * (v / yMax);
+  const poly = (key, color) => `<polyline points="${t.map((p, i) => xAt(i).toFixed(1) + ',' + yAt(p[key]).toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  let grid = ''; const step = yMax / 4;
+  for (let g = 0; g <= yMax + 0.01; g += step) { const y = yAt(g); grid += `<line x1="${pl}" y1="${y.toFixed(1)}" x2="${W - pr}" y2="${y.toFixed(1)}" stroke="rgba(127,127,127,.16)" stroke-width="1"/><text x="${pl - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="10" fill="rgba(127,127,127,.85)">${Math.round(g)}%</text>`; }
+  let xl = ''; t.forEach((p, i) => { xl += `<text x="${xAt(i).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="9.5" fill="rgba(127,127,127,.85)">${p.wk}</text>`; });
+  xl += `<text x="${xAt(n).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="9.5" fill="#DA251D">proj</text>`;
+  const proj = `<polyline points="${xAt(n - 1).toFixed(1)},${yAt(t[n - 1].ctr).toFixed(1)} ${xAt(n).toFixed(1)},${yAt(projCtr).toFixed(1)}" fill="none" stroke="#DA251D" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${xAt(n).toFixed(1)}" cy="${yAt(projCtr).toFixed(1)}" r="3.5" fill="#DA251D"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Tendência de visibilidade">${grid}${poly('sov', '#1B3A8B')}${poly('ai', '#D97706')}${poly('ctr', '#DA251D')}${proj}${xl}</svg>`;
+}
+function motorCSV() {
+  const san = v => String(v == null ? '' : v).replace(/[;\n\r]+/g, ' ').trim();
+  const ex = id => MOTOR.executed.includes(id) ? 'Sim' : 'Nao';
+  const L = ['Coluna;Consulta;Metrica;Acao recomendada;Executado'];
+  MOTOR.quickWins.forEach(a => L.push(['Quick Win', a.query, `pos ${a.pos} | ${a.vol}/mes | ${a.intent}`, a.action, ex(a.id)].map(san).join(';')));
+  MOTOR.longTail.forEach(a => L.push(['Long-tail', a.query, `CTR ${a.ctrFrom}% para ${a.ctrTo}% | ${a.vol}/mes`, a.fix, ex(a.id)].map(san).join(';')));
+  MOTOR.bets.forEach(a => L.push(['Aposta', a.query, `+${a.evals} avaliacoes/mes | ${a.season}`, a.action, ex(a.id)].map(san).join(';')));
+  const blob = new Blob(['﻿' + L.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'motor-semanal-plano.csv'; a.click();
+  toast('Plano exportado (CSV)');
+}
+function motorPNG() {
+  const s = motorScore(), dark = document.documentElement.dataset.theme === 'dark';
+  const bg = dark ? '#181B22' : '#ffffff', ink = dark ? '#E8E9ED' : '#15171C', soft = dark ? '#9AA0AD' : '#6A6F7B', red = '#DA251D', col = dark ? '#14161C' : '#F1F2F5';
+  const W = 1040, H = 620, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  const F = (w, sz) => `${w} ${sz}px "Plus Jakarta Sans", Arial, sans-serif`;
+  x.fillStyle = bg; x.fillRect(0, 0, W, H); x.fillStyle = red; x.fillRect(0, 0, W, 8);
+  x.fillStyle = ink; x.font = F(800, 32); x.fillText('Motor Semanal de Crescimento', 48, 72);
+  x.fillStyle = soft; x.font = F(500, 18); x.fillText('CCAA Pelotas · Semana ' + MOTOR.week, 48, 102);
+  const cx = 158, cy = 300, r = 96; x.lineWidth = 22; x.lineCap = 'round';
+  x.strokeStyle = col; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+  x.strokeStyle = red; x.beginPath(); x.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (s.score / 100)); x.stroke();
+  x.fillStyle = ink; x.font = F(800, 58); x.textAlign = 'center'; x.fillText(s.score, cx, cy + 12);
+  x.fillStyle = soft; x.font = F(600, 15); x.fillText('GROWTH SCORE', cx, cy + 44); x.textAlign = 'left';
+  x.fillStyle = s.delta >= 0 ? '#16a34a' : red; x.font = F(700, 21); x.fillText((s.delta >= 0 ? '+' : '') + s.delta + ' vs semana anterior', 300, 200);
+  x.fillStyle = ink; x.font = F(600, 23); motorWrap(x, 'Capturando ' + s.capture + '% do potencial de buscas de alta intenção em Pelotas esta semana.', 300, 244, 700, 32);
+  x.fillStyle = soft; x.font = F(800, 14); x.fillText('3 AÇÕES DESTA SEMANA', 300, 332);
+  MOTOR.quickWins.slice(0, 3).forEach((a, i) => { const yy = 372 + i * 66; x.fillStyle = red; x.font = F(800, 20); x.fillText((i + 1) + '.', 300, yy); x.fillStyle = ink; x.font = F(700, 18); x.fillText(motorShort(a.query, 60), 332, yy); x.fillStyle = soft; x.font = F(400, 14); x.fillText(motorShort(a.action, 92), 332, yy + 22); });
+  x.fillStyle = soft; x.font = F(400, 13); x.fillText('Painel de Marketing · ccaapel.github.io/mkt', 48, H - 26);
+  const a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = 'motor-semanal-ccaa.png'; a.click(); toast('Resumo exportado (PNG)');
+}
+function motorWrap(ctx, text, x0, y0, maxW, lh) { const ws = text.split(' '); let line = '', y = y0; for (const w of ws) { const test = line + w + ' '; if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line.trim(), x0, y); line = w + ' '; y += lh; } else line = test; } ctx.fillText(line.trim(), x0, y); }
+function motorShort(t, n) { return t.length > n ? t.slice(0, n - 1).trim() + '…' : t; }
+function motorImportGSC(text) {
+  try {
+    const lines = text.split(/\r?\n/).filter(l => l.trim()); if (lines.length < 2) throw 0;
+    const sep = lines[0].includes(';') ? ';' : ','; const head = lines[0].split(sep).map(h => h.toLowerCase());
+    const idx = keys => head.findIndex(h => keys.some(k => h.includes(k)));
+    const qi = idx(['consulta', 'query']), pi = idx(['posi', 'position']), ii = idx(['impress']), ci = idx(['clic', 'click']); if (qi < 0) throw 0;
+    const num = v => parseFloat(String(v || '').replace(/[%"]/g, '').replace(',', '.')) || 0;
+    const out = [];
+    lines.slice(1).map(l => l.split(sep)).filter(c => c[qi]).forEach((c, k) => {
+      const pos = pi >= 0 ? Math.round(num(c[pi])) : 0; if (pi >= 0 && (pos < 4 || pos > 20)) return;
+      const q = c[qi].replace(/"/g, '').trim(); const vol = ii >= 0 ? Math.round(num(c[ii])) : (ci >= 0 ? Math.round(num(c[ci])) : 0);
+      const intent = /experiment|gr[áa]tis|gratuit|pre[çc]o|quanto custa/.test(q.toLowerCase()) ? 'avaliação' : 'matrícula';
+      out.push({ id: 'qw_' + k, query: q, pos: pos || 10, vol, intent, ease: pos <= 8 ? 9 : pos <= 12 ? 7 : 5, action: 'Otimizar a página de "' + q + '": título com Pelotas, oferta de aula experimental e WhatsApp direto.' });
+    });
+    if (!out.length) throw 0;
+    MOTOR.quickWins = out.slice(0, 8); motorSave(); renderMotor(); toast(out.length + ' consultas importadas do Search Console');
+  } catch (e) { toast('CSV não reconhecido. Use o export de Consultas do Search Console.'); }
+}
 
 /* ===========================================================
    BOOT
