@@ -1,133 +1,32 @@
 {
-  "profile": {
-    "username": "ccaa.pelotas",
-    "name": "CCAA Pelotas",
-    "followers": 4702,
-    "posts": 901,
-    "following": 1507,
-    "business": true
-  },
-  "posts": [
-    {
-      "kind": "Imagem",
-      "code": "DZSOmGWuXHN",
-      "url": "https://www.instagram.com/p/DZSOmGWuXHN/",
-      "likes": 9,
-      "comments": 0,
-      "views": null,
-      "date": "2026-06-07",
-      "caption": "🏆✨ Bicampeão em experiência. Referência em ensino.\n\nQuando o assunto é aprender inglês e espanhol com qualidade, quem vive a experiência CCAA sabe a diferença.\n"
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DZP6B-LjjS2",
-      "url": "https://www.instagram.com/p/DZP6B-LjjS2/",
-      "likes": 6,
-      "comments": 0,
-      "views": null,
-      "date": "2026-06-06",
-      "caption": "Aprender espanhol fica muito mais envolvente quando você acompanha personagens cativantes e vive situações reais ao longo das aulas. ✨\n\nNo curso de espanhol do "
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DZNPoebDpCv",
-      "url": "https://www.instagram.com/p/DZNPoebDpCv/",
-      "likes": 7,
-      "comments": 0,
-      "views": null,
-      "date": "2026-06-05",
-      "caption": "A IA já faz parte da rotina de quem estuda, trabalha e cria. 🤖\n\nEnquanto alguns esperam a tradução chegar, outros já estão aprendendo, criando e inovando. 🚀\n\nPo"
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DYmjjoUjm6Q",
-      "url": "https://www.instagram.com/p/DYmjjoUjm6Q/",
-      "likes": 7,
-      "comments": 0,
-      "views": null,
-      "date": "2026-05-21",
-      "caption": "O futuro do seu filho não começa lá na frente. Começa nas escolhas que você faz hoje. 💭✨\n\nÉ nessa fase que o cérebro está mais aberto, curioso e pronto para abs"
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DYfCBjnjn0a",
-      "url": "https://www.instagram.com/p/DYfCBjnjn0a/",
-      "likes": 6,
-      "comments": 0,
-      "views": null,
-      "date": "2026-05-18",
-      "caption": "Seja no lançamento daquele álbum que você esperou meses, na call do game ou entendendo os memes que estão bombando lá fora... saber outro idioma é o que separa "
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DYR4H-Zjp46",
-      "url": "https://www.instagram.com/p/DYR4H-Zjp46/",
-      "likes": 11,
-      "comments": 0,
-      "views": null,
-      "date": "2026-05-13",
-      "caption": "Nada tira mais a aura do que ficar por fora da call gringa ou depender de legenda pra entender o hype. 💀\n\nNo English Course do ccaa, a gente foca no inglês que "
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DYM1r7JDsPj",
-      "url": "https://www.instagram.com/p/DYM1r7JDsPj/",
-      "likes": 5,
-      "comments": 0,
-      "views": null,
-      "date": "2026-05-11",
-      "caption": "Será que falta tempo… ou só o primeiro passo? 💭\n\nCom o CCAA digital, o inglês ou o espanhol se adaptam à sua rotina, e não o contrário.\n\nAprenda no seu ritmo, o"
-    },
-    {
-      "kind": "Reel",
-      "code": "DYKeyCaOJge",
-      "url": "https://www.instagram.com/p/DYKeyCaOJge/",
-      "likes": 58,
-      "comments": 9,
-      "views": 490,
-      "date": "2026-05-10",
-      "caption": "Mãe é uma das suas versões mais bonitas, mas a gente sabe que existe um universo inteiro aí dentro que nunca parou de vibrar. 🌸\n\nEssa semana nossos pequenos pre"
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DYDB3KIEXZq",
-      "url": "https://www.instagram.com/p/DYDB3KIEXZq/",
-      "likes": 7,
-      "comments": 0,
-      "views": null,
-      "date": "2026-05-07",
-      "caption": "O mercado não espera, e falar inglês ou espanhol já virou requisito. 💼\n\nCada vez mais, as melhores oportunidades pedem mais do que experiência: pedem comunicaçã"
-    },
-    {
-      "kind": "Reel",
-      "code": "DXueYRgjv7e",
-      "url": "https://www.instagram.com/p/DXueYRgjv7e/",
-      "likes": 51,
-      "comments": 2,
-      "views": 536,
-      "date": "2026-04-29",
-      "caption": "🎉 Aprender inglês pode ser uma aventura cheia de imaginação, risadas e descobertas incríveis!\n\nNo CCAA Kids, no YouTube, cada vídeo é um convite para mergulhar "
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DXfDNeRkaRM",
-      "url": "https://www.instagram.com/p/DXfDNeRkaRM/",
-      "likes": 5,
-      "comments": 0,
-      "views": null,
-      "date": "2026-04-23",
-      "caption": "Hoje é dia de celebrar um idioma que atravessa continentes, conecta culturas e faz parte da história de mais de 500 milhões de pessoas ao redor do mundo. \n\nO es"
-    },
-    {
-      "kind": "Carrossel",
-      "code": "DXSGH91Djmr",
-      "url": "https://www.instagram.com/p/DXSGH91Djmr/",
-      "likes": 8,
-      "comments": 0,
-      "views": null,
-      "date": "2026-04-18",
-      "caption": "Livros infantis são a porta de entrada para novos mundos, novas palavras e novas ideias. 🌎 \n\nNo Dia Nacional do Livro Infantil, a gente quer lembrar que ler em "
-    }
-  ],
-  "updatedAt": "2026-06-07"
+  "profile": { "username": "ccaa.pelotas", "name": "CCAA Pelotas", "followers": 4702, "posts": 901, "following": 1507, "business": true },
+  "updatedAt": "2026-06-07",
+  "count": 25,
+  "postsData": [
+    { "kind": "Carrossel", "code": "DYDB3KIEXZq", "url": "https://www.instagram.com/p/DYDB3KIEXZq/", "likes": 7, "comments": 0, "plays": null, "views": null, "date": "2026-05-07", "caption": "O mercado não espera, e falar inglês ou espanhol já virou requisito. As melhores oportunidades pedem comunicação. No CCAA você aprende de forma prática para o dia a dia profissional." },
+    { "kind": "Carrossel", "code": "DZP6B-LjjS2", "url": "https://www.instagram.com/p/DZP6B-LjjS2/", "likes": 6, "comments": 0, "plays": null, "views": null, "date": "2026-06-06", "caption": "Aprender espanhol fica mais envolvente com personagens cativantes como Natividad e José Luis. No curso de espanhol do CCAA você vive o idioma em situações reais." },
+    { "kind": "Carrossel", "code": "DYmjjoUjm6Q", "url": "https://www.instagram.com/p/DYmjjoUjm6Q/", "likes": 7, "comments": 0, "plays": null, "views": null, "date": "2026-05-21", "caption": "O futuro do seu filho começa nas escolhas de hoje. Nessa fase o cérebro está mais aberto. No CCAA o aprendizado é leve e respeita o tempo da criança." },
+    { "kind": "Imagem", "code": "DZSOmGWuXHN", "url": "https://www.instagram.com/p/DZSOmGWuXHN/", "likes": 9, "comments": 0, "plays": null, "views": null, "date": "2026-06-07", "caption": "Bicampeão em experiência. Referência em ensino. Reconhecidos mais uma vez no Experience Awards. Obrigado por confiarem no CCAA. É assim que se fala." },
+    { "kind": "Carrossel", "code": "DXfDNeRkaRM", "url": "https://www.instagram.com/p/DXfDNeRkaRM/", "likes": 5, "comments": 0, "plays": null, "views": null, "date": "2026-04-23", "caption": "Dia da Língua Espanhola: um idioma que atravessa continentes e conecta culturas. Quando você fala com segurança, cada destino ganha outra dimensão." },
+    { "kind": "Carrossel", "code": "DZNPoebDpCv", "url": "https://www.instagram.com/p/DZNPoebDpCv/", "likes": 7, "comments": 0, "plays": null, "views": null, "date": "2026-06-05", "caption": "A IA já faz parte da rotina de quem estuda e trabalha. A tecnologia abre portas, mas o inglês ajuda você a entrar primeiro. Vem evoluir com a gente. Link na bio." },
+    { "kind": "Carrossel", "code": "DXSGH91Djmr", "url": "https://www.instagram.com/p/DXSGH91Djmr/", "likes": 8, "comments": 0, "plays": null, "views": null, "date": "2026-04-18", "caption": "Dia Nacional do Livro Infantil. Ler em português ou inglês é sobre janelas que se abrem. Uma seleção de livros para a rotina dos pequenos. Qual era o seu favorito?" },
+    { "kind": "Carrossel", "code": "DYfCBjnjn0a", "url": "https://www.instagram.com/p/DYfCBjnjn0a/", "likes": 6, "comments": 0, "plays": null, "views": null, "date": "2026-05-18", "caption": "No lançamento do álbum, na call do game ou entendendo os memes lá fora: saber outro idioma separa quem olha de quem participa. English Course: games, séries e viagens." },
+    { "kind": "Carrossel", "code": "DYM1r7JDsPj", "url": "https://www.instagram.com/p/DYM1r7JDsPj/", "likes": 5, "comments": 0, "plays": null, "views": null, "date": "2026-05-11", "caption": "Será que falta tempo ou só o primeiro passo? Com o CCAA digital o inglês ou espanhol se adaptam à sua rotina. Aprenda no seu ritmo. Dê o primeiro passo hoje." },
+    { "kind": "Reel", "code": "DXueYRgjv7e", "url": "https://www.instagram.com/p/DXueYRgjv7e/", "likes": 51, "comments": 2, "plays": 2382, "views": 536, "date": "2026-04-29", "caption": "Aprender inglês pode ser uma aventura cheia de imaginação! No CCAA Kids no YouTube cada vídeo é historinha, música e diversão. Toda quarta tem novidade. Inscreva-se." },
+    { "kind": "Carrossel", "code": "DYR4H-Zjp46", "url": "https://www.instagram.com/p/DYR4H-Zjp46/", "likes": 11, "comments": 0, "plays": null, "views": null, "date": "2026-05-13", "caption": "Nada tira mais a aura do que ficar por fora da call gringa ou depender de legenda. English Course: fala destravada desde o dia 1, híbrido, no seu ritmo. Vira o main character." },
+    { "kind": "Reel", "code": "DWm7jTfjrzL", "url": "https://www.instagram.com/p/DWm7jTfjrzL/", "likes": 75, "comments": 4, "plays": 2367, "views": 694, "date": "2026-04-01", "caption": "Cuidado com as mentiras que te contam por aí! Aprender inglês de verdade é no CCAA." },
+    { "kind": "Imagem", "code": "DXKtMH8DkFc", "url": "https://www.instagram.com/p/DXKtMH8DkFc/", "likes": 6, "comments": 0, "plays": null, "views": null, "date": "2026-04-15", "caption": "Aprender inglês pode ser leve e criativo. No CCAA Kids no YouTube as crianças encontram historinhas, músicas e personagens. Novidade toda quarta. Inscreva-se no canal." },
+    { "kind": "Reel", "code": "DV2Cf3PDlr6", "url": "https://www.instagram.com/p/DV2Cf3PDlr6/", "likes": 59, "comments": 3, "plays": 2279, "views": 630, "date": "2026-03-14", "caption": "Onde você estaria hoje se já falasse inglês com confiança? O English Course é o upgrade que você precisa. Agende sua aula experimental e venha conhecer de perto." },
+    { "kind": "Carrossel", "code": "DWod6kOjkA2", "url": "https://www.instagram.com/p/DWod6kOjkA2/", "likes": 14, "comments": 0, "plays": null, "views": null, "date": "2026-04-02", "caption": "Um espaço acolhedor é onde ninguém precisa mudar para caber. 2 de abril, Dia Mundial de Conscientização do Autismo. Conscientizar é transformar informação em empatia." },
+    { "kind": "Reel", "code": "DW_syCmjqRc", "url": "https://www.instagram.com/p/DW_syCmjqRc/", "likes": 43, "comments": 2, "plays": 2140, "views": 518, "date": "2026-04-11", "caption": "Achou que não dava tempo de acelerar o inglês esse ano? As matrículas das turmas de Maio estão abertas! Livro condensado garante 2 módulos até dezembro com desconto. Garanta sua vaga." },
+    { "kind": "Carrossel", "code": "DV542NuDn1-", "url": "https://www.instagram.com/p/DV542NuDn1-/", "likes": 8, "comments": 0, "plays": null, "views": null, "date": "2026-03-15", "caption": "No Dia do Consumidor o CCAA está oferecendo uma AULA EXPERIMENTAL GRATUITA para começar inglês ou espanhol e sentir na prática a metodologia. É só mostrar este post." },
+    { "kind": "Reel", "code": "DWbp0yqDjKm", "url": "https://www.instagram.com/p/DWbp0yqDjKm/", "likes": 29, "comments": 0, "plays": 1169, "views": 334, "date": "2026-03-28", "caption": "Formatura Master 2026/01. Que orgulho ver nossos alunos terminando mais um ciclo." },
+    { "kind": "Reel", "code": "DWzDMtmDqTo", "url": "https://www.instagram.com/p/DWzDMtmDqTo/", "likes": 22, "comments": 0, "plays": 479, "views": 126, "date": "2026-04-06", "caption": "Teve tinta, teve bagunça e teve muita diversão! Depois de criarem os ovos, a missão foi encontrar todos. Resumão da atividade de Páscoa do CCAA Kids." },
+    { "kind": "Carrossel", "code": "DVyyP5ljtMN", "url": "https://www.instagram.com/p/DVyyP5ljtMN/", "likes": 9, "comments": 0, "plays": null, "views": null, "date": "2026-03-12", "caption": "Onde você estaria hoje se já falasse inglês com confiança? O English Course é o upgrade que você precisa. Agende sua aula experimental e venha conhecer de perto." },
+    { "kind": "Carrossel", "code": "DWL9tIwDsXL", "url": "https://www.instagram.com/p/DWL9tIwDsXL/", "likes": 19, "comments": 0, "plays": null, "views": null, "date": "2026-03-22", "caption": "O sotaque é texano, mas a qualidade você conhece. CCLS Houston é o destino para upgrade no idioma com selo americano e networking global. Intercâmbio. Partiu Texas!" },
+    { "kind": "Carrossel", "code": "DW6lwPBjubI", "url": "https://www.instagram.com/p/DW6lwPBjubI/", "likes": 7, "comments": 0, "plays": null, "views": null, "date": "2026-04-09", "caption": "Com as aulas híbridas do CCAA você escolhe a cada encontro entre presencial ou online, sempre ao vivo, com professor e interação. Mais flexibilidade, mesma qualidade." },
+    { "kind": "Reel", "code": "DWRRydaDqrb", "url": "https://www.instagram.com/p/DWRRydaDqrb/", "likes": 61, "comments": 2, "plays": 2318, "views": 594, "date": "2026-03-24", "caption": "Aprender fica mais fácil quando o ensino acompanha seu estilo. No CCAA escolha material físico ou digital, com assistente virtual e correção automática. Mais autonomia." },
+    { "kind": "Reel", "code": "DYKeyCaOJge", "url": "https://www.instagram.com/p/DYKeyCaOJge/", "likes": 58, "comments": 9, "plays": 1549, "views": 490, "date": "2026-05-10", "caption": "Mãe é uma das suas versões mais bonitas. Nossos pequenos cantaram You Are My Sunshine para celebrar o amor das mães. Happy Mothers Day! É assim que se demonstra amor." },
+    { "kind": "Carrossel", "code": "DVtgteyDmws", "url": "https://www.instagram.com/p/DVtgteyDmws/", "likes": 10, "comments": 0, "plays": null, "views": null, "date": "2026-03-10", "caption": "Presencial ou on-line? No CCAA você não precisa abrir mão de nenhum. Liberdade de escolher como assistir às aulas e adaptar à sua rotina. Mais constância nos estudos." }
+  ]
 }

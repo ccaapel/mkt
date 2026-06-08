@@ -80,58 +80,178 @@ function switchView(v) {
 /* ===========================================================
    PAINEL INSTAGRAM — dados reais do @ccaa.pelotas (Analytics)
    =========================================================== */
+let IG = null;
+const igState = { fType: '', fTopic: '', sort: 'inter', dir: -1 };
+const IG_WD = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const IG_TOPICS = [
+  { key: 'Inclusão', re: /autismo|neurodiverg|acolhedor|conscientiza/i, angle: 'Diferencial humano raro no nicho. Vale virar série/depoimento real (com consentimento) — gera conexão e diferenciação que nenhum concorrente local tem.' },
+  { key: 'Kids/Infantil', re: /filho|crian[çc]a|kids|infantil|pequenos|livros infantis|p[áa]scoa/i, angle: 'O TOPO de engajamento de vocês. Criança real em ação (cantando, brincando) + marcar os pais. Emoção converte pais — repetir toda semana.' },
+  { key: 'Captação/Oferta', re: /matr[íi]cul|vaga|aula experimental|desconto|link na bio|garanta|primeiro passo|consumidor|gratuita/i, angle: 'CTA direto + urgência. Converte melhor em VÍDEO com prova (aluno/resultado) do que em card. Sempre fechar com "link na bio / agende".' },
+  { key: 'Cultura pop/Teen', re: /game|s[ée]rie|meme|call gringa|main character|hype|[áa]lbum|aura/i, angle: 'Linguagem teen forte. Levar pro Reel com humor/POV e áudio em alta — é o que esse público compartilha e salva.' },
+  { key: 'Inglês & Carreira/IA', re: /mercado|profissional|carreira|oportunidade|trabalho|\bia\b|intelig[êe]ncia|tecnologia/i, angle: 'Ângulo atual e relevante (inglês + IA/carreira). Transformar em Reel falado com 1 exemplo prático + CTA de aula experimental.' },
+  { key: 'Espanhol', re: /espanhol|jos[ée] luis|natividad|l[íi]ngua espanhola/i, angle: 'Tem personagens próprios (José Luis/Natividad). Virar quadro de Reels curtos com 1 frase útil em espanhol por episódio.' },
+  { key: 'Intercâmbio', re: /houston|ccls|interc[âa]mbio|texas|networking/i, angle: 'Aspiracional para teens/universitários. Depoimento de quem foi + condição exclusiva pra aluno CCAA puxa lead qualificado.' },
+  { key: 'Método/Diferenciais', re: /h[íi]brid|online|presencial|material|digital|assistente|no seu ritmo|flexib|metodologia|autonomia/i, angle: 'Pare de explicar o método em card. MOSTRAR (bastidor de aula, professor, app na tela) gera mais confiança e engajamento.' },
+  { key: 'Institucional/Prêmios', re: /bicampe[ãa]o|experience awards|formatura|orgulho|refer[êe]ncia/i, angle: 'Autoridade/prova social. Reforça a marca, mas não puxa alcance novo — usar com moderação e sempre com rosto de aluno.' },
+  { key: 'Posicionamento/Marca', re: /mentiras|de verdade/i, angle: 'Reel curto e direto de posicionamento (CCAA x concorrência) teve ótimo alcance. Formato a repetir: 1 frase forte + corte rápido + áudio em alta.' },
+  { key: 'Datas comemorativas', re: /dia (mundial|nacional|da|do|internacional)|m[ãa]es|mother/i, angle: 'Data garante alcance fácil. Ganha muito quando vira cena real (ex: apresentação das crianças), não só arte comemorativa.' },
+];
+function igTopicOf(c) { for (const t of IG_TOPICS) if (t.re.test(c || '')) return t.key; return 'Outros'; }
+function igAngleOf(k) { const t = IG_TOPICS.find(x => x.key === k); return t ? t.angle : 'Conteúdo de marca/posicionamento — testar como Reel falado pra ganhar alcance.'; }
+function igFmtD(d) { if (!d) return '—'; const a = d.split('-'); return `${a[2]}/${a[1]}`; }
+
 async function renderInstagram() {
   const el = document.getElementById('igPanel');
   if (!el) return;
-  el.innerHTML = '<div class="ig-loading">Carregando dados do Instagram…</div>';
-  let data;
-  try {
-    const r = await fetch('data/instagram.json?cb=' + Date.now());
-    if (!r.ok) throw new Error('http');
-    data = await r.json();
-  } catch (e) {
-    el.innerHTML = '<div class="ig-empty">Dados do Instagram indisponíveis aqui (abra pelo site publicado). Para atualizar os números, peça uma nova coleta.</div>';
-    return;
+  if (!IG) {
+    el.innerHTML = '<div class="ig-loading">Carregando dados do Instagram…</div>';
+    try {
+      const r = await fetch('data/instagram.json?cb=' + Date.now());
+      if (!r.ok) throw new Error('http');
+      const data = await r.json();
+      const followers = data.profile?.followers || 1;
+      const posts = (data.postsData || []).map(x => {
+        const inter = (x.likes || 0) + (x.comments || 0);
+        return { ...x, inter, eng: inter / followers * 100, topic: igTopicOf(x.caption), wd: new Date(x.date + 'T12:00:00').getDay() };
+      });
+      IG = { profile: data.profile || {}, updatedAt: data.updatedAt, posts };
+    } catch (e) {
+      el.innerHTML = '<div class="ig-empty">Dados do Instagram indisponíveis aqui (abra pelo site publicado). Para atualizar, peça uma nova coleta.</div>';
+      return;
+    }
   }
-  const p = data.profile || {}, posts = data.posts || [];
-  const inter = x => (x.likes || 0) + (x.comments || 0);
-  const reels = posts.filter(x => x.kind === 'Reel'), est = posts.filter(x => x.kind !== 'Reel');
-  const avg = a => a.length ? Math.round(a.reduce((s, x) => s + inter(x), 0) / a.length) : 0;
-  const avgReel = avg(reels), avgEst = avg(est);
+  const p = IG.profile, posts = IG.posts;
+  const avgOf = a => a.length ? Math.round(a.reduce((s, x) => s + x.inter, 0) / a.length) : 0;
+  const KINDS = ['Reel', 'Carrossel', 'Imagem'];
+  const byKind = KINDS.map(k => ({ k, n: posts.filter(x => x.kind === k).length, avg: avgOf(posts.filter(x => x.kind === k)) }));
+  const maxKind = Math.max(1, ...byKind.map(x => x.avg));
+  const avgReel = avgOf(posts.filter(x => x.kind === 'Reel')), avgEst = avgOf(posts.filter(x => x.kind !== 'Reel'));
   const mult = avgEst ? (avgReel / avgEst).toFixed(1) : '—';
-  const totalInter = posts.reduce((s, x) => s + inter(x), 0);
-  const engRate = (p.followers && posts.length) ? ((totalInter / posts.length / p.followers) * 100).toFixed(2) : '—';
-  const fmt = d => { if (!d) return '—'; const [y, m, dd] = d.split('-'); return `${dd}/${m}`; };
-  const upd = data.updatedAt ? fmt(data.updatedAt) + '/' + data.updatedAt.slice(0, 4) : '';
 
-  const rows = posts.map(x => `
-    <tr class="${x.kind === 'Reel' ? 'reel' : ''}">
-      <td><span class="ig-badge ${x.kind === 'Reel' ? 'reel' : 'est'}">${x.kind}</span></td>
-      <td>${fmt(x.date)}</td>
-      <td class="num">${(x.likes || 0).toLocaleString('pt-BR')}</td>
-      <td class="num">${(x.comments || 0).toLocaleString('pt-BR')}</td>
-      <td class="num">${x.views != null ? x.views.toLocaleString('pt-BR') : '—'}</td>
-      <td class="ig-cap"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.caption || '(sem legenda)')}</a></td>
-    </tr>`).join('');
+  // tópicos
+  const topicMap = {};
+  posts.forEach(x => { (topicMap[x.topic] ||= []).push(x); });
+  const topics = Object.entries(topicMap).map(([k, arr]) => ({ k, n: arr.length, avg: avgOf(arr) })).sort((a, b) => b.avg - a.avg);
+  const maxTopic = Math.max(1, ...topics.map(t => t.avg));
+
+  // frequência por dia
+  const freq = IG_WD.map((w, i) => ({ w, n: posts.filter(x => x.wd === i).length, avg: avgOf(posts.filter(x => x.wd === i)) }));
+  const maxFreq = Math.max(1, ...freq.map(f => f.n));
+  const bestDay = [...freq].filter(f => f.n).sort((a, b) => b.avg - a.avg)[0];
+  const mostDay = [...freq].sort((a, b) => b.n - a.n)[0];
+
+  const totalInter = posts.reduce((s, x) => s + x.inter, 0);
+  const engRate = (totalInter / posts.length / (p.followers || 1) * 100).toFixed(2);
+  const bestFmt = [...byKind].sort((a, b) => b.avg - a.avg)[0];
+
+  const top10 = [...posts].sort((a, b) => b.inter - a.inter).slice(0, 10);
+  const bestTopic = topics.filter(t => t.n >= 2)[0] || topics[0];
+
+  const bar = (label, val, max, sub, cls, data) => `<div class="ig-bar ${data ? 'clk' : ''}" ${data || ''}><span class="ig-bar-l">${esc(label)}</span><span class="ig-bar-track"><span class="ig-bar-fill ${cls || ''}" style="width:${Math.round(val / max * 100)}%"></span></span><span class="ig-bar-v">${val}${sub || ''}</span></div>`;
 
   el.innerHTML = `
     <div class="ig-head">
-      <h2><span class="ig-dot"></span> Instagram · @${esc(p.username || 'ccaa.pelotas')}</h2>
-      <span class="ig-meta">Atualizado em ${upd} · <a href="https://www.instagram.com/${esc(p.username || 'ccaa.pelotas')}/" target="_blank" rel="noopener">ver perfil</a></span>
+      <h2><span class="ig-dot"></span> Inteligência de Conteúdo · @${esc(p.username || 'ccaa.pelotas')}</h2>
+      <span class="ig-meta">${posts.length} posts analisados · atualizado em ${igFmtD(IG.updatedAt)}/${(IG.updatedAt||'').slice(0,4)} · <a href="https://www.instagram.com/${esc(p.username||'ccaa.pelotas')}/" target="_blank" rel="noopener">ver perfil</a></span>
     </div>
     <div class="ig-kpis">
-      <div class="ig-kpi"><div class="v">${(p.followers || 0).toLocaleString('pt-BR')}</div><div class="l">Seguidores</div></div>
-      <div class="ig-kpi"><div class="v">${(p.posts || 0).toLocaleString('pt-BR')}</div><div class="l">Publicações</div></div>
-      <div class="ig-kpi"><div class="v">${Math.round(totalInter / (posts.length || 1))}</div><div class="l">Interações/post (média)</div></div>
+      <div class="ig-kpi"><div class="v">${(p.followers||0).toLocaleString('pt-BR')}</div><div class="l">Seguidores</div></div>
+      <div class="ig-kpi"><div class="v">${Math.round(totalInter/posts.length)}</div><div class="l">Interações/post (média)</div></div>
       <div class="ig-kpi"><div class="v">${engRate}%</div><div class="l">Taxa de engajamento</div></div>
+      <div class="ig-kpi"><div class="v">${bestFmt.k}</div><div class="l">Formato campeão</div></div>
     </div>
-    ${avgEst ? `<div class="ig-insight">⚡ <span>Seus <strong>Reels</strong> engajam <strong>${mult}x mais</strong> que posts estáticos (média de <strong>${avgReel}</strong> vs <strong>${avgEst}</strong> interações). Nos últimos ${posts.length} posts, só ${reels.length} foram Reels — <strong>priorizar Reels</strong> é a alavanca mais rápida de alcance.</span></div>` : ''}
-    <div class="ig-table-wrap">
-      <table class="ig-table">
-        <thead><tr><th>Tipo</th><th>Data</th><th class="num">Curtidas</th><th class="num">Coment.</th><th class="num">Views</th><th>Publicação</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    <div class="ig-insight">⚡ <span>Os <strong>Reels engajam ${mult}x mais</strong> que posts estáticos (${avgReel} vs ${avgEst} interações). Melhor tópico: <strong>${esc(bestTopic?.k||'—')}</strong> (${bestTopic?.avg||0}/post). Vocês postam mais na <strong>${mostDay.w}</strong>, mas a <strong>${bestDay?bestDay.w:'—'}</strong> rende mais engajamento.</span></div>
+
+    <div class="ig-grid2">
+      <div class="ig-section"><h3>Engajamento por tipo de conteúdo</h3>
+        ${byKind.map(x => bar(`${x.k} (${x.n})`, x.avg, maxKind, ' int.', '', `data-ftype="${x.k}"`)).join('')}
+      </div>
+      <div class="ig-section"><h3>Frequência de postagem (dia da semana)</h3>
+        ${freq.map(f => bar(f.w, f.n, maxFreq, ` post${f.n===1?'':'s'}`, 'blue')).join('')}
+      </div>
+    </div>
+
+    <div class="ig-section"><h3>Tópicos com melhor desempenho (média de interações)</h3>
+      ${topics.map(t => bar(t.k, t.avg, maxTopic, ` · ${t.n} post${t.n===1?'':'s'}`, '', `data-ftopic="${esc(t.k)}"`)).join('')}
+    </div>
+
+    <div class="ig-section"><h3>🏆 Top 10 postagens</h3>
+      <ul class="ig-top">${top10.map((x, i) => `<li>
+        <span class="rk">${i+1}</span>
+        <span class="tp"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.caption)}</a><small>${x.kind} · ${esc(x.topic)} · ${igFmtD(x.date)}</small></span>
+        <span class="mt"><b>${x.inter}</b> int.<br>${x.likes}❤ ${x.comments}💬${x.plays?` · ${x.plays.toLocaleString('pt-BR')} plays`:''}</span>
+      </li>`).join('')}</ul>
+    </div>
+
+    <div class="ig-section"><h3>🎯 Ângulos recomendados (o que a equipe pode aprender)</h3>
+      <div class="ig-angles">${topics.slice(0,6).map(t => `<div class="ig-angle">
+        <div class="ig-angle-stat">${t.k.toUpperCase()} · ${t.avg} int./post</div>
+        <p>${esc(igAngleOf(t.k))}</p>
+      </div>`).join('')}</div>
+    </div>
+
+    <div class="ig-section"><h3>Todas as ${posts.length} postagens</h3>
+      <div class="ig-filters">
+        <select id="igFType"><option value="">Todos os tipos</option>${KINDS.map(k=>`<option value="${k}">${k}</option>`).join('')}</select>
+        <select id="igFTopic"><option value="">Todos os tópicos</option>${topics.map(t=>`<option value="${esc(t.k)}">${esc(t.k)}</option>`).join('')}</select>
+        <button class="ig-reset" id="igReset">limpar filtros</button>
+      </div>
+      <div class="ig-table-wrap">
+        <table class="ig-table">
+          <thead><tr>
+            <th>Tipo</th>
+            <th class="srt" data-s="date">Data <span class="ar"></span></th>
+            <th>Tópico</th>
+            <th class="num srt" data-s="likes">Curtidas <span class="ar"></span></th>
+            <th class="num srt" data-s="comments">Coment. <span class="ar"></span></th>
+            <th class="num srt" data-s="plays">Alcance <span class="ar"></span></th>
+            <th class="num srt" data-s="eng">Eng. <span class="ar"></span></th>
+            <th>Publicação</th>
+          </tr></thead>
+          <tbody id="igTableBody"></tbody>
+        </table>
+      </div>
     </div>`;
+
+  // wiring
+  el.querySelectorAll('[data-ftype]').forEach(b => b.onclick = () => { igState.fType = b.dataset.ftype; igState.fTopic = ''; syncIgFilters(); renderIgTable(); });
+  el.querySelectorAll('[data-ftopic]').forEach(b => b.onclick = () => { igState.fTopic = b.dataset.ftopic; igState.fType = ''; syncIgFilters(); renderIgTable(); });
+  el.querySelector('#igFType').onchange = e => { igState.fType = e.target.value; renderIgTable(); };
+  el.querySelector('#igFTopic').onchange = e => { igState.fTopic = e.target.value; renderIgTable(); };
+  el.querySelector('#igReset').onclick = () => { igState.fType = ''; igState.fTopic = ''; syncIgFilters(); renderIgTable(); };
+  el.querySelectorAll('.ig-table th.srt').forEach(th => th.onclick = () => {
+    const s = th.dataset.s; if (igState.sort === s) igState.dir *= -1; else { igState.sort = s; igState.dir = (s === 'date') ? -1 : -1; }
+    renderIgTable();
+  });
+  renderIgTable();
+}
+function syncIgFilters() {
+  const a = document.getElementById('igFType'), b = document.getElementById('igFTopic');
+  if (a) a.value = igState.fType; if (b) b.value = igState.fTopic;
+}
+function renderIgTable() {
+  if (!IG) return;
+  const body = document.getElementById('igTableBody'); if (!body) return;
+  let rows = IG.posts.filter(x => (!igState.fType || x.kind === igState.fType) && (!igState.fTopic || x.topic === igState.fTopic));
+  const k = igState.sort, d = igState.dir;
+  rows.sort((a, b) => {
+    let va = k === 'date' ? a.date : (a[k] ?? 0), vb = k === 'date' ? b.date : (b[k] ?? 0);
+    return va < vb ? -d : va > vb ? d : 0;
+  });
+  body.innerHTML = rows.map(x => `
+    <tr class="${x.kind === 'Reel' ? 'reel' : ''}">
+      <td><span class="ig-badge ${x.kind === 'Reel' ? 'reel' : 'est'}">${x.kind}</span></td>
+      <td>${igFmtD(x.date)}</td>
+      <td><span class="ig-chip" title="${esc(igAngleOf(x.topic))}">${esc(x.topic)}</span></td>
+      <td class="num">${x.likes}</td>
+      <td class="num">${x.comments}</td>
+      <td class="num">${x.plays != null ? x.plays.toLocaleString('pt-BR') : '—'}</td>
+      <td class="num">${x.eng.toFixed(2)}%</td>
+      <td class="ig-cap"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.caption)}</a></td>
+    </tr>`).join('') || `<tr><td colspan="8" class="ig-empty">Nenhum post com esse filtro.</td></tr>`;
+  document.querySelectorAll('.ig-table th.srt').forEach(th => {
+    th.querySelector('.ar').textContent = th.dataset.s === igState.sort ? (igState.dir > 0 ? '▲' : '▼') : '';
+  });
 }
 
 /* ===========================================================
