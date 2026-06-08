@@ -62,6 +62,7 @@ const TITLES = {
   ideias:     ['Pipeline de Ideias', 'Backlog criativo para validação e priorização'],
   resultados: ['Analytics', 'Indicadores e resultados que comprovam valor'],
   motor:      ['Motor Semanal de Crescimento', 'Sistema semanal para transformar buscas locais em matrículas'],
+  gamefik:    ['Gamefik · Missões e Engajamento', 'Transforme a gamificação dos alunos em conteúdo e indicações'],
 };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -78,6 +79,7 @@ function switchView(v) {
   if (v === 'ideias') renderIdeas();
   if (v === 'resultados') { renderResults(); renderInstagram(); }
   if (v === 'motor') renderMotor();
+  if (v === 'gamefik') renderGamefik();
 }
 
 /* ===========================================================
@@ -1271,6 +1273,93 @@ function motorImportGSC(text) {
     if (!out.length) throw 0;
     MOTOR.quickWins = out.slice(0, 8); motorSave(); renderMotor(); toast(out.length + ' consultas importadas do Search Console');
   } catch (e) { toast('CSV não reconhecido. Use o export de Consultas do Search Console.'); }
+}
+
+/* ===========================================================
+   GAMEFIK - missões, vitrine e motor de indicação
+   =========================================================== */
+const GMF_MISSIONS = [
+  { id: 'copa', emoji: '⚽', name: 'Missão Copa do Mundo 2026', coins: 500, status: 'ativa', period: 'Junho a Julho de 2026', hero: true,
+    angle: 'Timing perfeito: a Copa 2026 começa agora e a vitrine do Gamefik já está toda temática (figurinhas, álbum, bola, bandeirinha). É a maior onda do ano para surfar com missão e conteúdo de inglês do futebol.',
+    ideas: ['Série "inglês do futebol": termos, países e narração durante a Copa', 'Reel mostrando os prêmios de Copa do Gamefik (álbum, bola, figurinhas) e como ganhar coins', 'Story: bolão da Copa em inglês valendo coins extras'] },
+  { id: 'junina', emoji: '🎉', name: 'Missão Festa Junina', coins: 300, status: 'ativa', period: 'Junho de 2026',
+    angle: 'Sazonal e bem gaúcha. Vira conteúdo de comunidade e bastidor com alto engajamento (Kids e teens, que é o público que mais engaja no seu Instagram).',
+    ideas: ['Reel da festa junina na escola com inglês temático', 'Carrossel: vocabulário de festa junina em inglês', 'Story da missão junina valendo coins'] },
+  { id: 'indica', emoji: '🎯', name: 'Missão Indique um Amigo (Influencer)', coins: 4000, status: 'ativa', period: 'Sempre ativa',
+    angle: 'É um programa de indicação que já roda dentro da escola valendo 4000 coins. Marketing deve torná-lo público e aspiracional: cada aluno vira um micro-influenciador. A aquisição de matrícula mais barata que vocês têm.',
+    ideas: ['Reel: aluno mostrando o que trocou com os 4000 coins da indicação', 'Post "Traga um amigo e ganhe 4000 coins" com a vitrine de prêmios', 'Story com enquete "quem você traria pro CCAA?"'] },
+  { id: 'hall', emoji: '🎃', name: 'Missão Halloween', coins: 400, status: 'futura', period: 'Outubro de 2026',
+    angle: 'Vocês já mandam bem no Halloween. Antecipar a missão cria expectativa e conteúdo divertido com fantasias.',
+    ideas: ['Reel de fantasias com vocabulário de Halloween em inglês', 'Missão Halloween com coins extras para quem vier fantasiado'] },
+  { id: 'aniv', emoji: '🎂', name: 'Missão 65 anos do CCAA', coins: 100, status: 'encerrada', period: 'Encerrada',
+    angle: 'Prova social e afeto. Reaproveitar os vídeos dos alunos cantando parabéns na recepção como conteúdo institucional.',
+    ideas: ['Compilado dos alunos cantando parabéns (prova social)', 'Post de retrospectiva dos 65 anos do CCAA'] },
+];
+const GMF_VITRINE = [
+  { n: 'Álbum da Copa do Mundo 2026', c: 9000, tag: 'Copa' },
+  { n: 'Bola de futebol estampa do Brasil', c: 10000, tag: 'Copa' },
+  { n: 'Pacote com 7 figurinhas da Copa', c: 4000, tag: 'Copa' },
+  { n: 'Bandeirinha do Brasil para o carro', c: 8000, tag: 'Copa' },
+  { n: 'Chaveiro Huntr/x', c: 2000, tag: 'Teen' },
+  { n: 'Hidratante Labial Carmed Glitter', c: 10500, tag: 'Teen' },
+  { n: 'Jogo de cartas Uno (mini)', c: 4000, tag: 'Jogos' },
+  { n: 'Vale Cineflix (um filme)', c: 6800, tag: 'Experiência' },
+  { n: 'Vale: teacher corrige tarefa fora do prazo', c: 1500, tag: 'Perk escolar' },
+  { n: 'Cafézinho ou chocolate na máquina', c: 1500, tag: 'Guloseima' },
+  { n: 'Doritos 32g', c: 3200, tag: 'Guloseima' },
+  { n: 'Necessaire CCAA', c: 7000, tag: 'CCAA' },
+];
+let gmfMap = {};
+function renderGamefik() {
+  const root = document.getElementById('gamefikRoot'); if (!root) return;
+  gmfMap = {};
+  GMF_MISSIONS.forEach(m => m.ideas.forEach((t, i) => { gmfMap[m.id + '_' + i] = { mission: m.name, text: t }; }));
+  gmfMap['vitrine'] = { mission: 'Vitrine Gamefik', text: 'Reel "Os prêmios mais cobiçados do Gamefik" (bola da Copa, Carmed, Uno, vale-cineflix) com CTA de como ganhar coins.' };
+  const hero = GMF_MISSIONS.find(m => m.hero) || GMF_MISSIONS[0];
+  const order = { ativa: 0, futura: 1, encerrada: 2 };
+  const list = GMF_MISSIONS.filter(m => m !== hero && m.id !== 'indica').sort((a, b) => order[a.status] - order[b.status]);
+  const heroIdeas = hero.ideas.map((t, i) => `<div class="pt-idea"><span>${esc(t)}</span><span class="pt-ibtns"><button data-gmf="idea" data-id="${hero.id}_${i}">+ Ideia</button><button data-gmf="task" data-id="${hero.id}_${i}">+ Entrega</button></span></div>`).join('');
+  const card = m => `<div class="pt-card"><div class="pt-card-top"><span class="pt-emoji">${m.emoji}</span><h3>${esc(m.name)}</h3><span class="pt-status ${m.status}">${esc(m.status)}</span></div><div class="pt-meta"><span class="pt-coin">${m.coins.toLocaleString('pt-BR')} coins</span><span>${esc(m.period)}</span></div><p class="pt-angle2">${esc(m.angle)}</p><ul class="pt-ilist">${m.ideas.map((t, i) => `<li><span>${esc(t)}</span><span class="pt-mini"><button data-gmf="idea" data-id="${m.id}_${i}">Ideia</button><button data-gmf="task" data-id="${m.id}_${i}">Entrega</button></span></li>`).join('')}</ul></div>`;
+  const vit = GMF_VITRINE.map(p => `<div class="gv-item"><span class="gv-tag">${esc(p.tag)}</span><span class="gv-n">${esc(p.n)}</span><span class="gv-c">${p.c.toLocaleString('pt-BR')}</span></div>`).join('');
+  const weekIdeas = [
+    '<b>Segunda:</b> Story "Missão da Semana" mostrando a missão ativa e os coins em jogo.',
+    '<b>Quarta:</b> Reel de um aluno mostrando um prêmio que trocou na vitrine do Gamefik (prova social).',
+    '<b>Sexta:</b> Post das conquistas da semana + CTA "Traga um amigo e ganhe 4000 coins".',
+  ];
+  root.innerHTML = `
+    <div class="pt-hero">
+      <span class="pt-tag">⭐ Missão da Semana</span>
+      <h2>${hero.emoji} ${esc(hero.name)}</h2>
+      <span class="pt-coins">🪙 ${hero.coins.toLocaleString('pt-BR')} coins · ${esc(hero.period)}</span>
+      <div class="pt-angle">${esc(hero.angle)}</div>
+      <div class="pt-ideas">${heroIdeas}</div>
+      <div class="pt-week"><button id="gmfWeek">Criar entregas desta semana</button></div>
+    </div>
+
+    <div class="pt-referral">
+      <h3>🎯 Seu motor de indicação já existe</h3>
+      <p>A missão <b>"Indique um Amigo" vale 4000 coins</b> e roda o ano todo. Cada aluno satisfeito é um vendedor. O papel do marketing é deixar isso <b>público e desejável</b>: mostrar os prêmios, os alunos ganhando e como é fácil indicar. É a matrícula mais barata que vocês conseguem.</p>
+    </div>
+
+    <div class="pt-section-h">Vitrine de prêmios (conteúdo pronto pra usar)</div>
+    <div class="gv-grid">${vit}</div>
+    <p class="gv-note">Mostrar a vitrine gera desejo. <b>Ideia de Reel:</b> "Os prêmios mais cobiçados do Gamefik" (bola da Copa, Carmed, Uno, vale-cineflix).<span class="pt-mini"><button data-gmf="idea" data-id="vitrine">Ideia</button><button data-gmf="task" data-id="vitrine">Entrega</button></span></p>
+
+    <div class="pt-section-h">Calendário de missões e ângulos de conteúdo</div>
+    <div class="pt-grid">${list.map(card).join('')}</div>
+
+    <div class="pt-section-h">Rotina semanal recorrente (Gamefik no Instagram)</div>
+    <ul class="pt-weekideas">${weekIdeas.map(t => `<li><span>›</span><span>${t}</span></li>`).join('')}</ul>`;
+
+  root.querySelector('#gmfWeek').onclick = () => {
+    hero.ideas.forEach((t, i) => { const dt = new Date(); dt.setDate(dt.getDate() + (i * 2 + 1)); db.tasks.unshift({ id: uid(), title: t.slice(0, 90), desc: 'Gamefik · ' + hero.name, cat: 'Conteúdo', resp: '', date: dt.toISOString().slice(0, 10), status: 'todo' }); });
+    save(); toast('3 entregas da semana criadas no Plano de Ação');
+  };
+  root.onclick = e => {
+    const b = e.target.closest('[data-gmf]'); if (!b) return; const a = gmfMap[b.dataset.id]; if (!a) return;
+    if (b.dataset.gmf === 'idea') { db.ideas.unshift({ id: uid(), title: a.text.slice(0, 70), desc: 'Gamefik · ' + a.mission, cat: 'Conteúdo', votes: 0 }); save(); toast('Adicionado ao Pipeline de Ideias'); }
+    else { const dt = new Date(); dt.setDate(dt.getDate() + 5); db.tasks.unshift({ id: uid(), title: a.text.slice(0, 90), desc: 'Gamefik · ' + a.mission, cat: 'Conteúdo', resp: '', date: dt.toISOString().slice(0, 10), status: 'todo' }); save(); toast('Adicionado às entregas'); }
+  };
 }
 
 /* ===========================================================

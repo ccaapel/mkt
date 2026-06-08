@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=13" />
+  <link rel="stylesheet" href="styles.css?v=14" />
 </head>
 <body>
   <!-- ===== SIDEBAR ===== -->
@@ -28,6 +28,7 @@
       <button class="nav-item" data-view="ideias">Pipeline</button>
       <button class="nav-item" data-view="resultados">Analytics</button>
       <button class="nav-item" data-view="motor">Motor Semanal</button>
+      <button class="nav-item" data-view="gamefik">Gamefik</button>
     </nav>
 
     <div class="sidebar-foot">
@@ -138,6 +139,12 @@
       <p class="mo-intro">De visibilidade para matrícula em 7 dias. O que você decide executar esta semana define o Growth Score da próxima.</p>
       <div id="motorRoot"></div>
     </section>
+
+    <!-- VIEW: GAMEFIK -->
+    <section class="view" id="view-gamefik">
+      <p class="mo-intro">O Gamefik já engaja seus alunos com missões, coins e prêmios. Aqui você transforma esse engajamento em conteúdo e indicações que trazem novas matrículas, toda semana.</p>
+      <div id="gamefikRoot"></div>
+    </section>
   </main>
 
   <!-- ===== FOLHA DE IMPRESSÃO (só aparece ao imprimir) ===== -->
@@ -224,6 +231,6 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
