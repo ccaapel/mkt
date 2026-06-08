@@ -78,7 +78,7 @@ body {
 .hint { font-size: 11px; color: var(--ink-soft); margin-top: 4px; text-align: center; }
 
 /* ===== MAIN ===== */
-.main { flex: 1; padding: 28px 36px; max-width: 1280px; min-width: 0; }
+.main { flex: 1; padding: 28px 44px; max-width: 1640px; min-width: 0; }
 .topbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 26px; gap: 16px; }
 .topbar h1 { font-size: 25px; font-weight: 800; letter-spacing: -.4px; }
 .subtitle { color: var(--ink-soft); font-size: 14px; margin-top: 3px; }
@@ -279,7 +279,7 @@ kbd { font: inherit; font-size: 10.5px; font-weight: 600; background: var(--bg);
 .btn-dark { background: var(--ink); color: #fff; border: none; cursor: pointer; padding: 10px 16px; border-radius: 10px; font: inherit; font-weight: 600; font-size: 13.5px; transition: all .15s; white-space: nowrap; }
 .btn-dark:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 
-/* ===== CARDS DE TAREFA — AÇÕES EM TEXTO ===== */
+/* ===== CARDS DE TAREFA - ACOES EM TEXTO ===== */
 .tc-mini { background: none; border: none; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; color: var(--ink-soft); padding: 2px; transition: all .15s; }
 .tc-mini:hover { color: var(--ink); }
 .tc-mini.tc-del:hover { color: var(--red); }
@@ -358,10 +358,10 @@ kbd { font: inherit; font-size: 10.5px; font-weight: 600; background: var(--bg);
 .ig-section { margin-top: 20px; }
 .ig-section > h3 { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); margin-bottom: 12px; }
 .ig-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.ig-bar { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 10px; padding: 5px 6px; font-size: 13px; border-radius: 8px; }
+.ig-bar { display: grid; grid-template-columns: 172px 1fr auto; align-items: center; gap: 12px; padding: 5px 6px; font-size: 13px; border-radius: 8px; }
 .ig-bar.clk { cursor: pointer; }
 .ig-bar.clk:hover { background: var(--col-bg); }
-.ig-bar-l { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ig-bar-l { color: var(--ink); font-weight: 600; white-space: normal; overflow: visible; line-height: 1.25; }
 .ig-bar-track { height: 13px; background: var(--col-bg); border-radius: 7px; overflow: hidden; }
 .ig-bar-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--red), #f0506a); border-radius: 7px; min-width: 3px; }
 .ig-bar-fill.blue { background: linear-gradient(90deg, var(--navy), #5378d6); }

@@ -14,6 +14,7 @@ const CATEGORIES = ['Social Media','Conteúdo','Campanhas','Captação','Eventos
 
 /* ---------- estado ---------- */
 let db = load();
+if (db.foco === 'Captação para o 2º semestre') db.foco = ''; // limpa foco antigo
 let calDate = new Date();
 save(); // garante que os dados iniciais fiquem persistidos
 
@@ -47,7 +48,7 @@ function seed() {
       { id: uid(), title: 'Reels da metodologia CCAA', desc: 'Vídeo curto explicando o método de conversação.', metric: 'Alcance', result: '12 mil contas · 38 leads', date: d(-15) },
       { id: uid(), title: 'Parceria com a Sunset Run', desc: 'Post colaborativo no evento de corrida da cidade.', metric: 'Crescimento', result: '+220 seguidores em 3 dias', date: d(-2) },
     ],
-    foco: 'Captação para o 2º semestre',
+    foco: '',
   };
 }
 
@@ -78,27 +79,27 @@ function switchView(v) {
 }
 
 /* ===========================================================
-   PAINEL INSTAGRAM — dados reais do @ccaa.pelotas (Analytics)
+   PAINEL INSTAGRAM -dados reais do @ccaa.pelotas (Analytics)
    =========================================================== */
 let IG = null;
 const igState = { fType: '', fTopic: '', sort: 'inter', dir: -1 };
 const IG_WD = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const IG_TOPICS = [
-  { key: 'Inclusão', re: /autismo|neurodiverg|acolhedor|conscientiza/i, angle: 'Diferencial humano raro no nicho. Vale virar série/depoimento real (com consentimento) — gera conexão e diferenciação que nenhum concorrente local tem.' },
-  { key: 'Kids/Infantil', re: /filho|crian[çc]a|kids|infantil|pequenos|livros infantis|p[áa]scoa/i, angle: 'O TOPO de engajamento de vocês. Criança real em ação (cantando, brincando) + marcar os pais. Emoção converte pais — repetir toda semana.' },
+  { key: 'Inclusão', re: /autismo|neurodiverg|acolhedor|conscientiza/i, angle: 'Diferencial humano raro no nicho. Vale virar série/depoimento real (com consentimento). Gera conexão e diferenciação que nenhum concorrente local tem.' },
+  { key: 'Kids/Infantil', re: /filho|crian[çc]a|kids|infantil|pequenos|livros infantis|p[áa]scoa/i, angle: 'O TOPO de engajamento de vocês. Criança real em ação (cantando, brincando) + marcar os pais. Emoção converte pais. Repetir toda semana.' },
   { key: 'Captação/Oferta', re: /matr[íi]cul|vaga|aula experimental|desconto|link na bio|garanta|primeiro passo|consumidor|gratuita/i, angle: 'CTA direto + urgência. Converte melhor em VÍDEO com prova (aluno/resultado) do que em card. Sempre fechar com "link na bio / agende".' },
-  { key: 'Cultura pop/Teen', re: /game|s[ée]rie|meme|call gringa|main character|hype|[áa]lbum|aura/i, angle: 'Linguagem teen forte. Levar pro Reel com humor/POV e áudio em alta — é o que esse público compartilha e salva.' },
+  { key: 'Cultura pop/Teen', re: /game|s[ée]rie|meme|call gringa|main character|hype|[áa]lbum|aura/i, angle: 'Linguagem teen forte. Levar pro Reel com humor/POV e áudio em alta. É o que esse público compartilha e salva.' },
   { key: 'Inglês & Carreira/IA', re: /mercado|profissional|carreira|oportunidade|trabalho|\bia\b|intelig[êe]ncia|tecnologia/i, angle: 'Ângulo atual e relevante (inglês + IA/carreira). Transformar em Reel falado com 1 exemplo prático + CTA de aula experimental.' },
   { key: 'Espanhol', re: /espanhol|jos[ée] luis|natividad|l[íi]ngua espanhola/i, angle: 'Tem personagens próprios (José Luis/Natividad). Virar quadro de Reels curtos com 1 frase útil em espanhol por episódio.' },
   { key: 'Intercâmbio', re: /houston|ccls|interc[âa]mbio|texas|networking/i, angle: 'Aspiracional para teens/universitários. Depoimento de quem foi + condição exclusiva pra aluno CCAA puxa lead qualificado.' },
   { key: 'Método/Diferenciais', re: /h[íi]brid|online|presencial|material|digital|assistente|no seu ritmo|flexib|metodologia|autonomia/i, angle: 'Pare de explicar o método em card. MOSTRAR (bastidor de aula, professor, app na tela) gera mais confiança e engajamento.' },
-  { key: 'Institucional/Prêmios', re: /bicampe[ãa]o|experience awards|formatura|orgulho|refer[êe]ncia/i, angle: 'Autoridade/prova social. Reforça a marca, mas não puxa alcance novo — usar com moderação e sempre com rosto de aluno.' },
+  { key: 'Institucional/Prêmios', re: /bicampe[ãa]o|experience awards|formatura|orgulho|refer[êe]ncia/i, angle: 'Autoridade/prova social. Reforça a marca, mas não puxa alcance novo. Usar com moderação e sempre com rosto de aluno.' },
   { key: 'Posicionamento/Marca', re: /mentiras|de verdade/i, angle: 'Reel curto e direto de posicionamento (CCAA x concorrência) teve ótimo alcance. Formato a repetir: 1 frase forte + corte rápido + áudio em alta.' },
   { key: 'Datas comemorativas', re: /dia (mundial|nacional|da|do|internacional)|m[ãa]es|mother/i, angle: 'Data garante alcance fácil. Ganha muito quando vira cena real (ex: apresentação das crianças), não só arte comemorativa.' },
 ];
 function igTopicOf(c) { for (const t of IG_TOPICS) if (t.re.test(c || '')) return t.key; return 'Outros'; }
-function igAngleOf(k) { const t = IG_TOPICS.find(x => x.key === k); return t ? t.angle : 'Conteúdo de marca/posicionamento — testar como Reel falado pra ganhar alcance.'; }
-function igFmtD(d) { if (!d) return '—'; const a = d.split('-'); return `${a[2]}/${a[1]}`; }
+function igAngleOf(k) { const t = IG_TOPICS.find(x => x.key === k); return t ? t.angle : 'Conteúdo de marca/posicionamento. Testar como Reel falado pra ganhar alcance.'; }
+function igFmtD(d) { if (!d) return '-'; const a = d.split('-'); return `${a[2]}/${a[1]}`; }
 
 async function renderInstagram() {
   const el = document.getElementById('igPanel');
@@ -126,7 +127,7 @@ async function renderInstagram() {
   const byKind = KINDS.map(k => ({ k, n: posts.filter(x => x.kind === k).length, avg: avgOf(posts.filter(x => x.kind === k)) }));
   const maxKind = Math.max(1, ...byKind.map(x => x.avg));
   const avgReel = avgOf(posts.filter(x => x.kind === 'Reel')), avgEst = avgOf(posts.filter(x => x.kind !== 'Reel'));
-  const mult = avgEst ? (avgReel / avgEst).toFixed(1) : '—';
+  const mult = avgEst ? (avgReel / avgEst).toFixed(1) : '-';
 
   // tópicos
   const topicMap = {};
@@ -160,7 +161,7 @@ async function renderInstagram() {
       <div class="ig-kpi"><div class="v">${engRate}%</div><div class="l">Taxa de engajamento</div></div>
       <div class="ig-kpi"><div class="v">${bestFmt.k}</div><div class="l">Formato campeão</div></div>
     </div>
-    <div class="ig-insight">⚡ <span>Os <strong>Reels engajam ${mult}x mais</strong> que posts estáticos (${avgReel} vs ${avgEst} interações). Melhor tópico: <strong>${esc(bestTopic?.k||'—')}</strong> (${bestTopic?.avg||0}/post). Vocês postam mais na <strong>${mostDay.w}</strong>, mas a <strong>${bestDay?bestDay.w:'—'}</strong> rende mais engajamento.</span></div>
+    <div class="ig-insight">⚡ <span>Os <strong>Reels engajam ${mult}x mais</strong> que posts estáticos (${avgReel} vs ${avgEst} interações). Melhor tópico: <strong>${esc(bestTopic?.k||'-')}</strong> (${bestTopic?.avg||0}/post). Vocês postam mais na <strong>${mostDay.w}</strong>, mas a <strong>${bestDay?bestDay.w:'-'}</strong> rende mais engajamento.</span></div>
 
     <div class="ig-grid2">
       <div class="ig-section"><h3>Engajamento por tipo de conteúdo</h3>
@@ -245,7 +246,7 @@ function renderIgTable() {
       <td><span class="ig-chip" title="${esc(igAngleOf(x.topic))}">${esc(x.topic)}</span></td>
       <td class="num">${x.likes}</td>
       <td class="num">${x.comments}</td>
-      <td class="num">${x.plays != null ? x.plays.toLocaleString('pt-BR') : '—'}</td>
+      <td class="num">${x.plays != null ? x.plays.toLocaleString('pt-BR') : '-'}</td>
       <td class="num">${x.eng.toFixed(2)}%</td>
       <td class="ig-cap"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.caption)}</a></td>
     </tr>`).join('') || `<tr><td colspan="8" class="ig-empty">Nenhum post com esse filtro.</td></tr>`;
@@ -727,7 +728,7 @@ function toast(msg) {
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
 /* ===========================================================
-   MODO APRESENTAÇÃO — deck para a reunião de alinhamento
+   MODO APRESENTAÇÃO -deck para a reunião de alinhamento
    =========================================================== */
 const PRES = { i: 0, slides: [] };
 function openPresent() {
@@ -767,7 +768,7 @@ function buildSlides() {
     <div class="present-eyebrow">Reunião de Marketing · CCAA Pelotas</div>
     <h1>${MONTHS[now.getMonth()]} de ${now.getFullYear()}</h1>
     <div class="present-foco-bar"><div class="present-foco-fill" style="width:${pct}%"></div></div>
-    <p class="present-sub">Foco do mês: <strong>${esc(db.foco || '—')}</strong> · ${pct}% concluído</p>
+    <p class="present-sub">Foco do mês: <strong>${esc(db.foco || '-')}</strong> · ${pct}% concluído</p>
   </div>`);
   S.push(`<div class="present-slide">
     <div class="present-eyebrow">Visão geral</div><h1>O mês em números</h1>
@@ -779,21 +780,21 @@ function buildSlides() {
     </div></div>`);
   S.push(`<div class="present-slide">
     <div class="present-eyebrow">Entregue na última semana</div><h1>O que saiu do papel</h1>
-    <ul class="present-list">${week.length ? week.map(t => `<li>✓ ${esc(t.title)}<span class="tag">${esc(t.cat || '')}</span></li>`).join('') : '<li>—</li>'}</ul></div>`);
+    <ul class="present-list">${week.length ? week.map(t => `<li>✓ ${esc(t.title)}<span class="tag">${esc(t.cat || '')}</span></li>`).join('') : '<li>-</li>'}</ul></div>`);
   S.push(`<div class="present-slide">
     <div class="present-eyebrow">A seguir</div><h1>Próximas entregas</h1>
-    <ul class="present-list">${up.length ? up.map(t => { const dt = new Date(t.date + 'T00:00'); return `<li><strong>${dt.getDate()}/${dt.getMonth() + 1}</strong> · ${esc(t.title)}<span class="tag">${esc(t.resp || '')}</span></li>`; }).join('') : '<li>—</li>'}</ul></div>`);
+    <ul class="present-list">${up.length ? up.map(t => { const dt = new Date(t.date + 'T00:00'); return `<li><strong>${dt.getDate()}/${dt.getMonth() + 1}</strong> · ${esc(t.title)}<span class="tag">${esc(t.resp || '')}</span></li>`; }).join('') : '<li>-</li>'}</ul></div>`);
   S.push(`<div class="present-slide">
     <div class="present-eyebrow">Prova de valor</div><h1>Destaques de performance</h1>
-    <ul class="present-list">${res.length ? res.map(r => `<li>${esc(r.title)}<span class="tag">${esc(r.result || '')}</span></li>`).join('') : '<li>—</li>'}</ul></div>`);
+    <ul class="present-list">${res.length ? res.map(r => `<li>${esc(r.title)}<span class="tag">${esc(r.result || '')}</span></li>`).join('') : '<li>-</li>'}</ul></div>`);
   S.push(`<div class="present-slide">
     <div class="present-eyebrow">Em avaliação</div><h1>Ideias prioritárias</h1>
-    <ul class="present-list">${ideas.length ? ideas.map(i => `<li>${esc(i.title)}<span class="tag">▲ ${i.votes || 0}</span></li>`).join('') : '<li>—</li>'}</ul></div>`);
+    <ul class="present-list">${ideas.length ? ideas.map(i => `<li>${esc(i.title)}<span class="tag">▲ ${i.votes || 0}</span></li>`).join('') : '<li>-</li>'}</ul></div>`);
   return S;
 }
 
 /* ===========================================================
-   COMMAND PALETTE — Ctrl/Cmd + K
+   COMMAND PALETTE -Ctrl/Cmd + K
    =========================================================== */
 let cmdkSel = 0, cmdkFiltered = [];
 function cmdkActions() {
@@ -842,7 +843,7 @@ function cmdkMove(d) {
 }
 
 /* ===========================================================
-   RESUMO DA REUNIÃO — texto pronto para copiar
+   RESUMO DA REUNIÃO -texto pronto para copiar
    =========================================================== */
 function buildSummaryText() {
   const all = db.tasks;
@@ -852,17 +853,17 @@ function buildSummaryText() {
   const up = db.tasks.filter(t => t.date && t.date >= today && t.status !== 'done').sort((a, b) => a.date.localeCompare(b.date)).slice(0, 6);
   const res = [...db.results].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 3);
   const L = [];
-  L.push(`RESUMO DE MARKETING — CCAA PELOTAS`);
+  L.push(`RESUMO DE MARKETING · CCAA PELOTAS`);
   L.push(`${MONTHS[now.getMonth()]} de ${now.getFullYear()}`);
   L.push(`--------------------------------------`);
-  L.push(`Foco do mes: ${db.foco || '—'}  (${pct}% concluido)`);
+  L.push(`Foco do mes: ${db.foco || '-'}  (${pct}% concluido)`);
   L.push(`Entregas: ${all.length} no total | ${done.length} concluidas | ${doing.length} em producao | ${todo.length} planejadas`);
   L.push(``);
   L.push(`CONCLUIDAS:`);
   done.forEach(t => L.push(`  - ${t.title}`));
   L.push(``);
   L.push(`PROXIMAS ENTREGAS:`);
-  up.forEach(t => { const dt = new Date(t.date + 'T00:00'); L.push(`  - ${dt.getDate()}/${dt.getMonth() + 1} ${t.title} (${t.resp || '—'})`); });
+  up.forEach(t => { const dt = new Date(t.date + 'T00:00'); L.push(`  - ${dt.getDate()}/${dt.getMonth() + 1} ${t.title} (${t.resp || '-'})`); });
   L.push(``);
   L.push(`DESTAQUES DE PERFORMANCE:`);
   res.forEach(r => L.push(`  - ${r.title}: ${r.result || ''}`));
@@ -891,7 +892,7 @@ function openSummary() {
 }
 
 /* ===========================================================
-   CONFETTI — celebra entrega concluída
+   CONFETTI -celebra entrega concluída
    =========================================================== */
 function confetti() {
   const canvas = document.getElementById('confettiCanvas');
@@ -947,7 +948,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ===========================================================
-   GERENCIAR ENTREGAS — central tipo planilha
+   GERENCIAR ENTREGAS -central tipo planilha
    =========================================================== */
 const manageState = { sort: 'date', dir: 1 };
 const manageSel = new Set();
@@ -989,7 +990,7 @@ function renderManage() {
       <td class="col-check"><input type="checkbox" class="row-check" ${manageSel.has(t.id) ? 'checked' : ''} /></td>
       <td class="col-title"><input data-field="title" value="${esc(t.title)}" /></td>
       <td><select data-field="cat">${manageCatOptions(t.cat)}</select></td>
-      <td><input data-field="resp" value="${esc(t.resp || '')}" placeholder="—" /></td>
+      <td><input data-field="resp" value="${esc(t.resp || '')}" placeholder="-" /></td>
       <td><input type="date" data-field="date" value="${t.date || ''}" /></td>
       <td><select data-field="status">${manageStatusOptions(t.status)}</select></td>
       <td><button class="row-del">Excluir</button></td>

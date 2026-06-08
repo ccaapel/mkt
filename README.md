@@ -4,12 +4,12 @@ Site para organizar o calendário de marketing da unidade e dar visão clara nas
 
 ## O que tem
 
-- **Painel** — KPIs do mês, foco principal, % concluído e próximas ações.
-- **Calendário** — grade mensal com as ações por data (cores por status).
-- **Tarefas** — quadro kanban (A fazer / Em andamento / Concluído), arrastar e soltar.
-- **Ideias** — banco de ideias futuras com votação.
-- **Resultados** — registro do que deu certo, com métrica e impacto.
-- **Backup** — exportar/importar tudo em JSON.
+- **Painel**: KPIs do mês, foco principal, % concluído e próximas ações.
+- **Calendário**: grade mensal com as ações por data (cores por status).
+- **Tarefas**: quadro kanban (A fazer / Em andamento / Concluído), arrastar e soltar.
+- **Ideias**: banco de ideias futuras com votação.
+- **Resultados**: registro do que deu certo, com métrica e impacto.
+- **Backup**: exportar/importar tudo em JSON.
 
 Tudo roda no navegador, sem servidor. Os dados ficam salvos no `localStorage` da máquina.
 
