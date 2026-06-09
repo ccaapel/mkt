@@ -392,6 +392,17 @@ body {
 
 /* ===== UTIL ===== */
 [hidden] { display: none !important; }
+
+/* ===== LOGIN ===== */
+.login-gate { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: grid; place-items: center; padding: 20px; }
+.login-box { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 34px 30px; width: min(360px, 92vw); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; align-items: center; gap: 11px; text-align: center; }
+.login-logo { width: 56px; height: 56px; object-fit: contain; background: #fff; border-radius: 12px; padding: 4px; }
+.login-box h2 { font-size: 20px; font-weight: 800; margin-top: 6px; }
+.login-box > p { font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; }
+.login-box input { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: 15px; background: var(--card); color: var(--ink); }
+.login-box input:focus { outline: none; border-color: var(--red); }
+.login-box .btn-primary { width: 100%; margin-top: 4px; padding: 12px; }
+.login-err { color: var(--red); font-size: 13px; font-weight: 600; }
 kbd { font: inherit; font-size: 10.5px; font-weight: 600; background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; color: var(--ink-soft); margin-left: 2px; }
 
 /* ===== BOTÕES EXTRA ===== */

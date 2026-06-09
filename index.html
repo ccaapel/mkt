@@ -8,9 +8,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=16" />
 </head>
 <body>
+  <!-- ===== LOGIN ===== -->
+  <div class="login-gate" id="loginGate">
+    <form class="login-box" id="loginForm">
+      <img class="login-logo" src="assets/ccaa-logo.png?v=16" alt="CCAA" />
+      <h2>Painel de Marketing</h2>
+      <p>CCAA Pelotas</p>
+      <input id="loginUser" placeholder="Usuário" autocomplete="username" autocapitalize="none" />
+      <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" />
+      <button type="submit" class="btn-primary">Entrar</button>
+      <span class="login-err" id="loginErr" hidden>Usuário ou senha incorretos</span>
+    </form>
+  </div>
+
   <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar">
     <div class="brand">
@@ -36,6 +49,7 @@
       <button class="btn-ghost" id="exportBtn">⬇ Exportar dados</button>
       <button class="btn-ghost" id="importBtn">⬆ Importar dados</button>
       <input type="file" id="importFile" accept="application/json" hidden />
+      <button class="btn-ghost" id="logoutBtn">Sair</button>
       <p class="hint" id="syncStatus">Dados salvos neste navegador.</p>
     </div>
   </aside>
@@ -231,7 +245,6 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

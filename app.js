@@ -15,6 +15,7 @@ const CLOUD = {
   url: '',
   key: '',
 };
+let sb = null, cloudReady = false, lastSync = '', _pushTimer = null;
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const STATUSES = [
   { key: 'todo',  label: 'Planejado',   ico: '○' },
@@ -40,7 +41,6 @@ function saveLocal() { try { localStorage.setItem(STORE_KEY, JSON.stringify(db))
 function save() { saveLocal(); cloudPush(); }
 
 /* ---- nuvem em tempo real ---- */
-let sb = null, cloudReady = false, lastSync = '', _pushTimer = null;
 function cloudPush() {
   if (!cloudReady || !sb) return;
   clearTimeout(_pushTimer);
@@ -54,8 +54,18 @@ function setSync(state) {
   const el = document.getElementById('syncStatus'); if (!el) return;
   el.textContent = state === 'on' ? '🟢 Sincronizado em tempo real' : state === 'err' ? '🟡 Sem conexão (modo local)' : 'Dados salvos neste navegador.';
 }
+function loadSupabase() {
+  if (window.supabase) return Promise.resolve(true);
+  return new Promise(res => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    s.onload = () => res(true); s.onerror = () => res(false);
+    document.head.appendChild(s);
+  });
+}
 async function cloudInit() {
-  if (!CLOUD.url || !CLOUD.key || !window.supabase) { setSync('local'); return; }
+  if (!CLOUD.url || !CLOUD.key) { setSync('local'); return; }
+  if (!(await loadSupabase())) { setSync('err'); return; }
   try {
     sb = window.supabase.createClient(CLOUD.url, CLOUD.key);
     const { data } = await sb.from('painel').select('data').eq('id', 'main').maybeSingle();
@@ -1404,6 +1414,25 @@ function renderGamefik() {
     else { const dt = new Date(); dt.setDate(dt.getDate() + 5); db.tasks.unshift({ id: uid(), title: a.text.slice(0, 90), desc: 'Gamefik · ' + a.mission, cat: 'Conteúdo', resp: '', date: dt.toISOString().slice(0, 10), status: 'todo' }); save(); toast('Adicionado às entregas'); }
   };
 }
+
+/* ===========================================================
+   LOGIN (acesso simples ao painel)
+   =========================================================== */
+(function authGate() {
+  const KEY = 'ccaa_auth_ok', U = 'ccaa', P = 'Pel551*';
+  const gate = document.getElementById('loginGate');
+  if (localStorage.getItem(KEY) === '1' && gate) gate.hidden = true;
+  const form = document.getElementById('loginForm');
+  if (form) form.onsubmit = e => {
+    e.preventDefault();
+    const u = (document.getElementById('loginUser').value || '').trim();
+    const p = document.getElementById('loginPass').value || '';
+    if (u === U && p === P) { localStorage.setItem(KEY, '1'); gate.hidden = true; }
+    else { const er = document.getElementById('loginErr'); if (er) er.hidden = false; }
+  };
+  const lo = document.getElementById('logoutBtn');
+  if (lo) lo.onclick = () => { if (confirm('Sair do painel?')) { localStorage.removeItem(KEY); location.reload(); } };
+})();
 
 /* ===========================================================
    BOOT
