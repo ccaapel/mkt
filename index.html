@@ -36,7 +36,7 @@
       <button class="btn-ghost" id="exportBtn">⬇ Exportar dados</button>
       <button class="btn-ghost" id="importBtn">⬆ Importar dados</button>
       <input type="file" id="importFile" accept="application/json" hidden />
-      <p class="hint">Dados salvos neste navegador.</p>
+      <p class="hint" id="syncStatus">Dados salvos neste navegador.</p>
     </div>
   </aside>
 
@@ -231,6 +231,7 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="app.js?v=14"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>

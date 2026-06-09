@@ -4,6 +4,17 @@
    =========================================================== */
 
 const STORE_KEY = 'ccaa_mkt_v2';
+
+/* ============================================================
+   SINCRONIZAÇÃO EM NUVEM (Supabase) - preencha para ativar.
+   Com isso, todos os computadores veem o MESMO painel em tempo real.
+   url: URL do projeto Supabase (ex: https://xxxxx.supabase.co)
+   key: chave "anon public" do projeto.
+   ============================================================ */
+const CLOUD = {
+  url: '',
+  key: '',
+};
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const STATUSES = [
   { key: 'todo',  label: 'Planejado',   ico: '○' },
@@ -25,7 +36,39 @@ function load() {
   } catch (e) {}
   return seed();
 }
-function save() { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
+function saveLocal() { try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); } catch (e) {} }
+function save() { saveLocal(); cloudPush(); }
+
+/* ---- nuvem em tempo real ---- */
+let sb = null, cloudReady = false, lastSync = '', _pushTimer = null;
+function cloudPush() {
+  if (!cloudReady || !sb) return;
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(async () => {
+    try { lastSync = JSON.stringify(db); await sb.from('painel').upsert({ id: 'main', data: db, updated_at: new Date().toISOString() }); }
+    catch (e) { setSync('err'); }
+  }, 500);
+}
+function rerenderCurrent() { const a = document.querySelector('.view.active'); if (a) switchView(a.id.replace('view-', '')); }
+function setSync(state) {
+  const el = document.getElementById('syncStatus'); if (!el) return;
+  el.textContent = state === 'on' ? '🟢 Sincronizado em tempo real' : state === 'err' ? '🟡 Sem conexão (modo local)' : 'Dados salvos neste navegador.';
+}
+async function cloudInit() {
+  if (!CLOUD.url || !CLOUD.key || !window.supabase) { setSync('local'); return; }
+  try {
+    sb = window.supabase.createClient(CLOUD.url, CLOUD.key);
+    const { data } = await sb.from('painel').select('data').eq('id', 'main').maybeSingle();
+    if (data && data.data) { db = data.data; lastSync = JSON.stringify(db); saveLocal(); rerenderCurrent(); }
+    else { lastSync = JSON.stringify(db); await sb.from('painel').upsert({ id: 'main', data: db, updated_at: new Date().toISOString() }); }
+    sb.channel('painel-main').on('postgres_changes', { event: '*', schema: 'public', table: 'painel', filter: 'id=eq.main' }, p => {
+      const nd = p && p.new && p.new.data; if (!nd) return;
+      const j = JSON.stringify(nd); if (j === lastSync) return;
+      db = nd; lastSync = j; saveLocal(); rerenderCurrent();
+    }).subscribe();
+    cloudReady = true; setSync('on');
+  } catch (e) { setSync('err'); }
+}
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
 /* ---------- dados de exemplo (primeira abertura) ---------- */
@@ -1388,4 +1431,5 @@ function renderGamefik() {
   document.getElementById('todayChip').textContent =
     `${now.getDate()} de ${MONTHS[now.getMonth()]} de ${now.getFullYear()}`;
   renderPainel();
+  cloudInit();
 })();
