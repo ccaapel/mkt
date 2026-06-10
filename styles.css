@@ -379,6 +379,19 @@ body {
 .gv-note b { color: var(--ink); }
 .gv-note .pt-mini { display: inline-flex; margin-left: 6px; vertical-align: middle; }
 
+/* ===== SUGESTÕES ===== */
+.sg-add { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.sg-add input { padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: 14px; background: var(--card); color: var(--ink); }
+.sg-add #sgText { flex: 1; min-width: 220px; }
+.sg-add #sgAuthor { width: 180px; }
+.sg-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.sg-item { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+.sg-item p { font-size: 14px; line-height: 1.5; color: var(--ink); }
+.sg-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-soft); }
+.sg-actions { display: flex; gap: 8px; }
+.sg-actions .tc-mini { opacity: 1; }
+.sg-actions .sg-del:hover { color: var(--red); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 880px) {
   .sidebar { width: 168px; padding: 16px 10px; }

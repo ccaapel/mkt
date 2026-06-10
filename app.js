@@ -101,6 +101,7 @@ function seed() {
       { id: uid(), title: 'Reels da metodologia CCAA', desc: 'Vídeo curto explicando o método de conversação.', metric: 'Alcance', result: '12 mil contas · 38 leads', date: d(-15) },
       { id: uid(), title: 'Parceria com a Sunset Run', desc: 'Post colaborativo no evento de corrida da cidade.', metric: 'Crescimento', result: '+220 seguidores em 3 dias', date: d(-2) },
     ],
+    suggestions: [],
     foco: '',
   };
 }
@@ -109,13 +110,14 @@ function seed() {
    NAVEGAÇÃO
    =========================================================== */
 const TITLES = {
-  painel:     ['Dashboard', 'Visão geral do mês para o alinhamento da equipe'],
+  painel:     ['Painel', 'Visão geral do mês para o alinhamento da equipe'],
   calendario: ['Planejamento Editorial', 'Planejamento das ações de marketing por data'],
   tarefas:    ['Plano de Ação', 'Acompanhamento das entregas do mês'],
-  ideias:     ['Pipeline de Ideias', 'Backlog criativo para validação e priorização'],
-  resultados: ['Analytics', 'Indicadores e resultados que comprovam valor'],
-  motor:      ['Motor Semanal de Crescimento', 'Sistema semanal para transformar buscas locais em matrículas'],
+  ideias:     ['Banco de Ideias', 'Backlog criativo para validação e priorização'],
+  resultados: ['Desempenho', 'Indicadores e resultados que comprovam valor'],
+  motor:      ['Inteligência de Busca Local', 'Transforme buscas locais em matrículas, semana a semana'],
   gamefik:    ['Gamefik · Missões e Engajamento', 'Transforme a gamificação dos alunos em conteúdo e indicações'],
+  sugestoes:  ['Sugestões da Equipe', 'Espaço para registrar ideias e melhorias do dia a dia'],
 };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -133,7 +135,42 @@ function switchView(v) {
   if (v === 'resultados') { renderResults(); renderInstagram(); }
   if (v === 'motor') renderMotor();
   if (v === 'gamefik') renderGamefik();
+  if (v === 'sugestoes') renderSuggestions();
 }
+
+/* ===========================================================
+   SUGESTÕES DA EQUIPE
+   =========================================================== */
+function renderSuggestions() {
+  const el = document.getElementById('sgList'); if (!el) return;
+  db.suggestions = db.suggestions || [];
+  const list = [...db.suggestions].sort((a, b) => (b.at || '').localeCompare(a.at || ''));
+  el.innerHTML = list.length ? list.map(s => `
+    <div class="sg-item">
+      <p>${esc(s.text)}</p>
+      <div class="sg-foot">
+        <span>${esc(s.author || 'Anônimo')}${s.date ? ' · ' + esc(s.date) : ''}</span>
+        <span class="sg-actions">
+          <button class="tc-mini" data-sg-idea="${s.id}">Virar ideia</button>
+          <button class="tc-mini sg-del" data-sg-del="${s.id}">Excluir</button>
+        </span>
+      </div>
+    </div>`).join('') : `<div class="empty">Nenhuma sugestão ainda. Registre a primeira acima.</div>`;
+  el.querySelectorAll('[data-sg-del]').forEach(b => b.onclick = () => { db.suggestions = db.suggestions.filter(x => x.id !== b.dataset.sgDel); save(); toast('Sugestão removida'); renderSuggestions(); });
+  el.querySelectorAll('[data-sg-idea]').forEach(b => b.onclick = () => {
+    const s = db.suggestions.find(x => x.id === b.dataset.sgIdea); if (!s) return;
+    db.ideas.unshift({ id: uid(), title: s.text.slice(0, 70), desc: 'Sugestão de ' + (s.author || 'equipe'), cat: '', votes: 0 });
+    save(); toast('Enviada para o Banco de Ideias');
+  });
+}
+document.getElementById('sgAdd').onclick = () => {
+  const t = document.getElementById('sgText'), a = document.getElementById('sgAuthor');
+  const txt = (t.value || '').trim(); if (!txt) { toast('Escreva a sugestão primeiro'); return; }
+  db.suggestions = db.suggestions || [];
+  const now = new Date();
+  db.suggestions.unshift({ id: uid(), text: txt, author: (a.value || '').trim(), date: `${now.getDate()}/${now.getMonth() + 1}`, at: now.toISOString() });
+  save(); t.value = ''; a.value = ''; toast('Sugestão registrada'); renderSuggestions();
+};
 
 /* ===========================================================
    PAINEL INSTAGRAM -dados reais do @ccaa.pelotas (Analytics)
@@ -1367,13 +1404,13 @@ function renderGamefik() {
   const root = document.getElementById('gamefikRoot'); if (!root) return;
   gmfMap = {};
   GMF_MISSIONS.forEach(m => m.ideas.forEach((t, i) => { gmfMap[m.id + '_' + i] = { mission: m.name, text: t }; }));
-  gmfMap['vitrine'] = { mission: 'Vitrine Gamefik', text: 'Reel "Os prêmios mais cobiçados do Gamefik" (bola da Copa, Carmed, Uno, vale-cineflix) com CTA de como ganhar coins.' };
   const hero = GMF_MISSIONS.find(m => m.hero) || GMF_MISSIONS[0];
   const order = { ativa: 0, futura: 1, encerrada: 2 };
   const list = GMF_MISSIONS.filter(m => m !== hero && m.id !== 'indica').sort((a, b) => order[a.status] - order[b.status]);
   const heroIdeas = hero.ideas.map((t, i) => `<div class="pt-idea"><span>${esc(t)}</span><span class="pt-ibtns"><button data-gmf="idea" data-id="${hero.id}_${i}">+ Ideia</button><button data-gmf="task" data-id="${hero.id}_${i}">+ Entrega</button></span></div>`).join('');
   const card = m => `<div class="pt-card"><div class="pt-card-top"><span class="pt-emoji">${m.emoji}</span><h3>${esc(m.name)}</h3><span class="pt-status ${m.status}">${esc(m.status)}</span></div><div class="pt-meta"><span class="pt-coin">${m.coins.toLocaleString('pt-BR')} coins</span><span>${esc(m.period)}</span></div><p class="pt-angle2">${esc(m.angle)}</p><ul class="pt-ilist">${m.ideas.map((t, i) => `<li><span>${esc(t)}</span><span class="pt-mini"><button data-gmf="idea" data-id="${m.id}_${i}">Ideia</button><button data-gmf="task" data-id="${m.id}_${i}">Entrega</button></span></li>`).join('')}</ul></div>`;
-  const vit = GMF_VITRINE.map(p => `<div class="gv-item"><span class="gv-tag">${esc(p.tag)}</span><span class="gv-n">${esc(p.n)}</span><span class="gv-c">${p.c.toLocaleString('pt-BR')}</span></div>`).join('');
+  const calGroups = [{ label: 'Pendentes (em andamento)', st: 'ativa' }, { label: 'Futuras', st: 'futura' }, { label: 'Encerradas', st: 'encerrada' }];
+  const calHtml = calGroups.map(g => { const ms = list.filter(m => m.status === g.st); return ms.length ? `<div class="pt-section-h">${g.label}</div><div class="pt-grid">${ms.map(card).join('')}</div>` : ''; }).join('');
   const weekIdeas = [
     '<b>Segunda:</b> Story "Missão da Semana" mostrando a missão ativa e os coins em jogo.',
     '<b>Quarta:</b> Reel de um aluno mostrando um prêmio que trocou na vitrine do Gamefik (prova social).',
@@ -1394,12 +1431,8 @@ function renderGamefik() {
       <p>A missão <b>"Indique um Amigo" vale 4000 coins</b> e roda o ano todo. Cada aluno satisfeito é um vendedor. O papel do marketing é deixar isso <b>público e desejável</b>: mostrar os prêmios, os alunos ganhando e como é fácil indicar. É a matrícula mais barata que vocês conseguem.</p>
     </div>
 
-    <div class="pt-section-h">Vitrine de prêmios (conteúdo pronto pra usar)</div>
-    <div class="gv-grid">${vit}</div>
-    <p class="gv-note">Mostrar a vitrine gera desejo. <b>Ideia de Reel:</b> "Os prêmios mais cobiçados do Gamefik" (bola da Copa, Carmed, Uno, vale-cineflix).<span class="pt-mini"><button data-gmf="idea" data-id="vitrine">Ideia</button><button data-gmf="task" data-id="vitrine">Entrega</button></span></p>
-
-    <div class="pt-section-h">Calendário de missões e ângulos de conteúdo</div>
-    <div class="pt-grid">${list.map(card).join('')}</div>
+    <div class="pt-section-h" style="margin-top:22px">Calendário de missões e ângulos de conteúdo</div>
+    ${calHtml}
 
     <div class="pt-section-h">Rotina semanal recorrente (Gamefik no Instagram)</div>
     <ul class="pt-weekideas">${weekIdeas.map(t => `<li><span>›</span><span>${t}</span></li>`).join('')}</ul>`;

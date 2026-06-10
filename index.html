@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=17" />
 </head>
 <body>
   <!-- ===== LOGIN ===== -->
@@ -35,13 +35,14 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" data-view="painel">Dashboard</button>
+      <button class="nav-item active" data-view="painel">Painel</button>
       <button class="nav-item" data-view="calendario">Planejamento</button>
       <button class="nav-item" data-view="tarefas">Plano de Ação</button>
-      <button class="nav-item" data-view="ideias">Pipeline</button>
-      <button class="nav-item" data-view="resultados">Analytics</button>
-      <button class="nav-item" data-view="motor">Motor Semanal</button>
+      <button class="nav-item" data-view="ideias">Ideias</button>
+      <button class="nav-item" data-view="resultados">Desempenho</button>
+      <button class="nav-item" data-view="motor">Inteligência de Busca</button>
       <button class="nav-item" data-view="gamefik">Gamefik</button>
+      <button class="nav-item" data-view="sugestoes">Sugestões</button>
     </nav>
 
     <div class="sidebar-foot">
@@ -58,7 +59,7 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="viewTitle">Dashboard</h1>
+        <h1 id="viewTitle">Painel</h1>
         <p class="subtitle" id="viewSub">Visão geral do mês para o alinhamento da equipe</p>
       </div>
       <div class="topbar-actions">
@@ -159,6 +160,16 @@
       <p class="mo-intro">O Gamefik já engaja seus alunos com missões, coins e prêmios. Aqui você transforma esse engajamento em conteúdo para o @ccaa.pelotas.</p>
       <div id="gamefikRoot"></div>
     </section>
+
+    <!-- VIEW: SUGESTÕES -->
+    <section class="view" id="view-sugestoes">
+      <div class="sg-add">
+        <input id="sgText" placeholder="Escreva uma sugestão ou melhoria para a equipe..." />
+        <input id="sgAuthor" placeholder="Seu nome (opcional)" />
+        <button class="btn-primary" id="sgAdd">Adicionar</button>
+      </div>
+      <div id="sgList" class="sg-list"></div>
+    </section>
   </main>
 
   <!-- ===== FOLHA DE IMPRESSÃO (só aparece ao imprimir) ===== -->
@@ -245,6 +256,6 @@
 
   <canvas class="confetti-canvas" id="confettiCanvas" hidden></canvas>
 
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>
